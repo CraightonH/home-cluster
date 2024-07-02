@@ -112,8 +112,8 @@ spec:
         annotations:
           # cert-manager.io/cluster-issuer: letsencrypt-production
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          nginx.ingress.kubernetes.io/proxy-read-timeout: 3600 # 1 hour
-          nginx.ingress.kubernetes.io/proxy-send-timeout: 3600 # 1 hour
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600" # 1 hour
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "3600" # 1 hour
           nginx.ingress.kubernetes.io/server-snippets: | # allow websockets
             location / {
               proxysetheader Upgrade $httpupgrade;

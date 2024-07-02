@@ -5,7 +5,10 @@
     },
     "sops.defaults.ageKeyFile": "age.key",
     "yaml.schemas": {
-        "Kubernetes": "./kubernetes/*.yaml"
+        "Kubernetes": "./kubernetes/*.yaml",
+        "https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/library/common/values.schema.json": [
+            "**/values.yaml",
+        ]
     },
     "vs-kubernetes": {
         "vs-kubernetes.kubeconfig": "./kubeconfig",

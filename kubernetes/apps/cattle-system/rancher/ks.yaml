@@ -11,7 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-dns
-      namespace: network
   path: ./kubernetes/apps/cattle-system/rancher/app
   prune: true
   sourceRef:

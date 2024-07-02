@@ -124,7 +124,7 @@ spec:
       codeserver-external:
         enabled: true
         className: external
-        nameOverride: home-assistant-codeserver
+        nameOverride: codeserver
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}

@@ -109,7 +109,7 @@ spec:
         nameOverride: home-assistant
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
-          nginx.org/websocket-services: home-assistant
+          # nginx.org/websocket-services: home-assistant
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
         hosts:
           - host: home.${SECRET_DOMAIN}

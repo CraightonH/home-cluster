@@ -110,9 +110,21 @@ spec:
         className: external
         nameOverride: home-assistant
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production
-          # nginx.org/websocket-services: home-assistant
+          # cert-manager.io/cluster-issuer: letsencrypt-production
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+          nginx.ingress.kubernetes.io/proxy-read-timeout: 3600 # 1 hour
+          nginx.ingress.kubernetes.io/proxy-send-timeout: 3600 # 1 hour
+          nginx.ingress.kubernetes.io/server-snippets: | # allow websockets
+            location / {
+              proxysetheader Upgrade $httpupgrade;
+              proxyhttpversion 1.1;
+              proxysetheader X-Forwarded-Host $httphost;
+              proxysetheader X-Forwarded-Proto $scheme;
+              proxysetheader X-Forwarded-For $remoteaddr;
+              proxysetheader Host $host;
+              proxysetheader Connection "upgrade";
+              proxycachebypass $httpupgrade;
+            }
         hosts:
           - host: home.${SECRET_DOMAIN}
             paths:
@@ -128,7 +140,7 @@ spec:
         className: external
         nameOverride: codeserver
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production
+          # cert-manager.io/cluster-issuer: letsencrypt-production
           external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
         hosts:
           - host: haconfig.${SECRET_DOMAIN}

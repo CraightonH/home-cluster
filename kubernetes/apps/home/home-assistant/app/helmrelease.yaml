@@ -36,7 +36,7 @@ spec:
 
     controllers:
       home-assistant:
-        strategy: RollingUpdate
+        strategy: Recreate
         containers:
           home-assistant:
             image:

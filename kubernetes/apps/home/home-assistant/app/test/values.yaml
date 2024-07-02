@@ -1,6 +1,8 @@
 defaultPodOptions:
   dnsPolicy: ClusterFirstWithHostNet
   hostNetwork: true
+  securityContext:
+    runAsUser: 0
 
 global:
   fullnameOverride: home-assistant

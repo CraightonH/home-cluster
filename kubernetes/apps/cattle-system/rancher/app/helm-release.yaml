@@ -15,11 +15,15 @@ spec:
         name: rancher-charts
         namespace: flux-system
   dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
     - name: ingress-nginx-external
       namespace: network
-  interval: 15m0s
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
     replicas: 1
     hostname: rancher.${SECRET_DOMAIN}

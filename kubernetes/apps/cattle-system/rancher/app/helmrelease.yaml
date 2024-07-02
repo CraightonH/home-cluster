@@ -21,6 +21,7 @@ spec:
   install:
     remediation:
       retries: 3
+    timeout: 30m
   upgrade:
     cleanupOnFail: true
     remediation:

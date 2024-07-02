@@ -106,10 +106,11 @@ spec:
       home-assistant-external:
         enabled: true
         className: external
+        nameOverride: home-assistant
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
           nginx.org/websocket-services: home-assistant
-          external-dns.alpha.kubernetes.io/target: "home.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: home.${SECRET_DOMAIN}
         hosts:
           - host: home.${SECRET_DOMAIN}
             paths:
@@ -123,9 +124,10 @@ spec:
       codeserver-external:
         enabled: true
         className: external
+        nameOverride: home-assistant-codeserver
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
-          external-dns.alpha.kubernetes.io/target: "haconfig.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/target: haconfig.${SECRET_DOMAIN}
         hosts:
           - host: haconfig.${SECRET_DOMAIN}
             paths:

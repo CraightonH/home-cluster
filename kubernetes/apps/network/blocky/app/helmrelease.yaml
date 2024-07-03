@@ -14,6 +14,15 @@ spec:
         kind: HelmRepository
         name: k8s-at-home
         namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+    timeout: 2m
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  releaseName: *app
   values:
     image:
       repository: ghcr.io/0xerr0r/blocky

@@ -20,7 +20,7 @@ spec:
       namespace: network
     - name: nfs-subdir-external-provisioner
       namespace: kube-system
-    - name: mosquitto
+    - name: mqtt
   install:
     remediation:
       retries: 3

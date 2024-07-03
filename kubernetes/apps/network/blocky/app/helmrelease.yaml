@@ -60,8 +60,8 @@ spec:
           - ${DEFAULT_GATEWAY}
       customDNS:
         mapping:
-          hubble.${SECRET_DOMAIN}: %{SECRET_INTERNAL_INGRESS}
-          longhorn.${SECRET_DOMAIN}: %{SECRET_INTERNAL_INGRESS}
+          hubble.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
+          longhorn.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS} # TODO: Confirm if this catches all external ingresses and routes them locally
           # games.${SECRET_DOMAIN}: ${GAME_SERVER_IP}
       blocking:

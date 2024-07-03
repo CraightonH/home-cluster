@@ -1,0 +1,84 @@
+global:
+  fullnameOverride: *app
+
+defaultPodOptions:
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - amd64
+
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: plexinc/pms-docker
+          tag: 1.40.3.8555-fef15d30c
+        env:
+          TZ: America/Denver
+          ALLOWED_NETWORKS: 192.168.1.0/255.255.255.0
+          HOSTNAME: HancockPlex
+        probes:
+          liveness: &probes
+            type: HTTP
+            port: &port 32400
+            path: /web/index.html
+          readiness: *probes
+          startup: *probes
+
+service:
+  main:
+    controller: main
+    nameOverride: "{{ .Values.global.fullnameOverride }}"
+    ports:
+      http:
+        port: *port
+
+ingress:
+  main:
+    enabled: true
+    className: external
+    annotations:
+      external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+      cert-manager.io/cluster-issuer: letsencrypt-production
+    hosts:
+      - host: plex.${SECRET_DOMAIN}
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: main
+    tls:
+      - hosts:
+          - plex.${SECRET_DOMAIN}
+        secretName: plex-tls
+
+persistence:
+  media:
+    enabled: true
+    type: nfs
+    server: ${SECRET_NAS_ADDRESS}
+    path: /volume1/Media/plex
+    advancedMounts:
+      main:
+        main:
+          - path: /data
+            readOnly: false
+  config:
+    enabled: true
+    type: persistentVolumeClaim
+    storageClass: longhorn
+    size: 20Gi
+    accessMode: ReadWriteOnce
+    advancedMounts:
+      main:
+        main:
+          - path: /config
+            readOnly: false

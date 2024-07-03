@@ -49,7 +49,8 @@ spec:
               - "teslamate.${SECRET_DOMAIN}"
             secretName: "teslamate-tls"
     env:
-      MQTT_HOST: mqtt
+      MQTT_HOST: "mqtt"
+      DISABLE_MQTT: "true"
     envFrom:
       - secretRef:
           name: teslamate-secrets

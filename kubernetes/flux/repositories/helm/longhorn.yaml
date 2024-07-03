@@ -2,8 +2,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: rancher-charts
+  name: longhorn
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://releases.rancher.com/server-charts/stable
+  url: https://charts.longhorn.io

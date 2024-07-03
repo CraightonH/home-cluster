@@ -18,3 +18,4 @@ resources:
   - ./rancher-charts.yaml
   - ./k8s-at-home.yaml
   - ./nfs-subdir-external-provisioner.yaml
+  - ./longhorn.yaml

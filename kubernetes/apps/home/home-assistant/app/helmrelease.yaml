@@ -15,8 +15,8 @@ spec:
         name: bjw-s
         namespace: flux-system
   dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
+    - name: ingress-nginx-external
+      namespace: network
   install:
     remediation:
       retries: 3

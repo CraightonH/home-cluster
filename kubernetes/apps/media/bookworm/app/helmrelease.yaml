@@ -21,8 +21,8 @@ spec:
         cronjob:
           schedule: "*/5 * * * *"
           concurrencyPolicy: Forbid
-          failedJobsHistoryLimit: 1
-          successfulJobsHistoryLimit: 1
+          failedJobsHistory: 1
+          successfulJobsHistory: 1
           suspend: false
         containers:
           main:
@@ -33,6 +33,7 @@ spec:
     service:
       main:
         enabled: false
+        controller: main
 
     configMaps:
       config:

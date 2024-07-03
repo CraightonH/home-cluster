@@ -33,7 +33,7 @@ spec:
           mqtt:
             image:
               repository: eclipse-mosquitto
-              tag: 2.0.15
+              tag: 2.0.18
             env:
               TZ: America/Denver
             probes:
@@ -67,6 +67,15 @@ spec:
             allow_anonymous true
 
     persistence:
+      config:
+        name: mqtt-config
+        type: configMap
+        advancedMounts:
+          mqtt:
+            mqtt:
+              - path: /mosquitto/config
+
+                readOnly: false
       data:
         enabled: false # let mqtt be ephemeral
         type: nfs
@@ -76,13 +85,6 @@ spec:
           mqtt:
             mqtt:
               - path: /mosquitto/data
-      config:
-        name: mqtt-config
-        type: configMap
-        advancedMounts:
-          mqtt:
-            mqtt:
-              - path: /mosquitto/config
 
     serviceAccount:
       create: false

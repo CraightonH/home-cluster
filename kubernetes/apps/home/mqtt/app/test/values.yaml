@@ -58,6 +58,7 @@ persistence:
       mqtt:
         mqtt:
           - path: /mosquitto/config
+            readOnly: false
 
 serviceAccount:
   create: false

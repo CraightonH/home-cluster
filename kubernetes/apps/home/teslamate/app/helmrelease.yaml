@@ -51,6 +51,7 @@ spec:
             secretName: "teslamate-tls"
     env:
       MQTT_HOST: "mqtt"
+      MQTT_PORT: "1883"
       TZ: America/Denver
       DISABLE_MQTT: "true"
     envFrom:

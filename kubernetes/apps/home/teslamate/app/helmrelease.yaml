@@ -17,6 +17,7 @@ spec:
     - name: cloudflared
     - name: ingress-nginx-external
     - name: mosquitto
+    - name: nfs-subdir-external-provisioner
   install:
     remediation:
       retries: 3
@@ -24,7 +25,7 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  releaseName: teslamate
+  releaseName: *app
   values:
     image:
       repository: teslamate/teslamate

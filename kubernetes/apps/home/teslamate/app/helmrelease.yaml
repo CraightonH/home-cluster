@@ -12,7 +12,7 @@ spec:
       version: 7.1.2
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: k8s-at-home # TODO: migrate to bjw-s
         namespace: flux-system
   dependsOn:
     - name: ingress-nginx-external

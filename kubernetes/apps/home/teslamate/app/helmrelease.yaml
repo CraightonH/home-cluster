@@ -51,7 +51,8 @@ spec:
             secretName: "teslamate-tls"
     env:
       MQTT_HOST: "mqtt"
-      DISABLE_MQTT: "false"
+      TZ: America/Denver
+      DISABLE_MQTT: "true"
     envFrom:
       - secretRef:
           name: teslamate-secrets

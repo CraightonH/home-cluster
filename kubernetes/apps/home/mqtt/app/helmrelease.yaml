@@ -42,7 +42,7 @@ spec:
                 custom: true
                 spec:
                   tcpSocket:
-                    port: &port 1833
+                    port: &port 1883
                   initialDelaySeconds: 5
                   periodSeconds: 10
                   timeoutSeconds: 3

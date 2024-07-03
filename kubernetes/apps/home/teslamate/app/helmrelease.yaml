@@ -1,0 +1,56 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app teslamate
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: teslamate
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+  dependsOn:
+    - name: cloudflared
+    - name: ingress-nginx-external
+    - name: mosquitto
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  releaseName: teslamate
+  values:
+    image:
+      repository: teslamate/teslamate
+      tag: 1.29.1
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: "teslamate.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "teslamate.${SECRET_DOMAIN}"
+            secretName: "teslamate-tls"
+    env:
+      MQTT_HOST: mqtt
+    envFrom:
+      - secretRef:
+          name: teslamate-secrets
+    postgresql:
+      enabled: true
+      primary:
+        persistence:
+          enabled: true
+          storageClass: nfs-client

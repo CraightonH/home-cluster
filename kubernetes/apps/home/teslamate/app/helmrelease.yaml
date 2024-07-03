@@ -53,7 +53,7 @@ spec:
       MQTT_HOST: "mqtt"
       MQTT_PORT: "1883"
       TZ: America/Denver
-      DISABLE_MQTT: "true"
+      DISABLE_MQTT: "false"
     envFrom:
       - secretRef:
           name: teslamate-secrets

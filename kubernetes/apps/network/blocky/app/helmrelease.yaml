@@ -57,7 +57,7 @@ spec:
     config: |
       upstream:
         default:
-          - ${DEFAULT_GATEWAY}
+          - ${SECRET_DEFAULT_GATEWAY}
       customDNS:
         mapping:
           hubble.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
@@ -94,10 +94,7 @@ spec:
           default:
             - ads
       clientLookup:
-        upstream: tcp+udp:${DEFAULT_GATEWAY}
-      prometheus:
-        enable: false
-        path: /metrics
+        upstream: tcp+udp:${SECRET_DEFAULT_GATEWAY}
       bootstrapDns: tcp+udp:1.1.1.1
       ports:
         http: 4000

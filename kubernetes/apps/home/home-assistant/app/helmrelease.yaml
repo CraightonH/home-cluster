@@ -120,7 +120,7 @@ spec:
               proxyhttpversion 1.1;
               proxysetheader X-Forwarded-Host $httphost;
               proxysetheader X-Forwarded-Proto $scheme;
-              proxysetheader X-Forwarded-For $remoteaddr;
+              proxysetheader X-Forwarded-For $proxy_add_x_forwarded_for;
               proxysetheader Host $host;
               proxysetheader Connection "upgrade";
               proxycachebypass $httpupgrade;

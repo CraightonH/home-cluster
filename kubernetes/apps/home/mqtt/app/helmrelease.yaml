@@ -1,0 +1,87 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app mqtt
+  namespace: home
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s-charts
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    global:
+      fullnameOverride: mqtt
+
+    controllers:
+      mqtt:
+        strategy: Recreate
+        containers:
+          mqtt:
+            image:
+              repository: eclipse-mosquitto
+              tag: 2.0.15
+            env:
+              TZ: America/Denver
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 1833
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+              readiness: *probes
+
+    service:
+      main:
+        controller: mqtt
+        nameOverride: mqtt
+        ports:
+          mqtt:
+            port: *port
+
+    configMaps:
+      config:
+        nameOverride: config
+        data:
+          mosquitto.conf: |
+            per_listener_settings false
+            listener 1883
+            allow_anonymous true
+
+    persistence:
+      data:
+        enabled: false # let mqtt be ephemeral
+        type: nfs
+        server: "${SECRET_NAS_ADDRESS}"
+        path: /volume9/mqtt
+        advancedMounts:
+          mqtt:
+            mqtt:
+              - path: /mosquitto/data
+      config:
+        name: mqtt-config
+        type: configMap
+        advancedMounts:
+          mqtt:
+            mqtt:
+              - path: /mosquitto/config
+
+    serviceAccount:
+      create: false

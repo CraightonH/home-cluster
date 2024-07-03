@@ -95,6 +95,9 @@ spec:
             - ads
       clientLookup:
         upstream: tcp+udp:${SECRET_DEFAULT_GATEWAY}
+      prometheus:
+        enable: false
+        path: /metrics
       bootstrapDns: tcp+udp:1.1.1.1
       ports:
         http: 4000

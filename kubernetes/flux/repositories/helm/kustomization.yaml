@@ -16,3 +16,4 @@ resources:
   - ./ingress-nginx.yaml
   - ./k8s-gateway.yaml
   - ./rancher-charts.yaml
+  - ./k8s-at-home.yaml

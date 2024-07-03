@@ -1,0 +1,127 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: blocky
+  namespace: network
+spec:
+  interval: 30m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: blocky
+      version: 10.5.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home-charts
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/0xerr0r/blocky
+      tag: v0.24
+    controller:
+      enabled: true
+      type: deployment
+      strategy: RollingUpdate
+      replicas: 2
+    env:
+      TZ: "America/Denver"
+    service:
+      main:
+        ports:
+          http:
+            port: 4000
+      dns:
+        enabled: true
+        type: LoadBalancer
+        externalIPs:
+          - "${SECRET_BLOCKY_ADDRESS}"
+        ports:
+          tcp:
+            enabled: true
+            port: 53
+            protocol: TCP
+            targetPort: 53
+          udp:
+            enabled: true
+            port: 53
+            protocol: UDP
+            targetPort: 53
+        externalTrafficPolicy: Local
+    metrics:
+      enabled: false
+      serviceMonitor:
+        interval: 30s
+        scrapeTimeout: 10s
+      prometheusRule:
+        enabled: false
+    config: |
+      upstream:
+        default:
+          - ${DEFAULT_GATEWAY}
+      customDNS:
+        mapping:
+          hubble.${SECRET_DOMAIN}: %{SECRET_INTERNAL_INGRESS}
+          longhorn.${SECRET_DOMAIN}: %{SECRET_INTERNAL_INGRESS}
+          ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS} # TODO: Confirm if this catches all external ingresses and routes them locally
+          # games.${SECRET_DOMAIN}: ${GAME_SERVER_IP}
+      blocking:
+        blackLists:
+          ads:
+            - https://raw.githubusercontent.com/CraightonH/cluster-k3s/main/cluster/apps/networking/blocky/my-blacklist.txt
+            - https://raw.githubusercontent.com/ookangzheng/dbl-oisd-nl/master/dbl_light.txt
+            - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
+            - https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
+            - |
+              /^ad([sxv]?[0-9]*|system)[_.-]([^.[:space:]]+\.){1,}|[_.-]ad([sxv]?[0-9]*|system)[_.-]/
+              /^(.+[_.-])?adse?rv(er?|ice)?s?[0-9]*[_.-]/
+              /^(.+[_.-])?telemetry[_.-]/
+              /^adim(age|g)s?[0-9]*[_.-]/
+              /^adtrack(er|ing)?[0-9]*[_.-]/
+              /^advert(s|is(ing|ements?))?[0-9]*[_.-]/
+              /^aff(iliat(es?|ion))?[_.-]/
+              /^analytics?[_.-]/
+              /^banners?[_.-]/
+              /^beacons?[0-9]*[_.-]/
+              /^count(ers?)?[0-9]*[_.-]/
+              /^mads\./
+              /^pixels?[-.]/
+              /^stat(s|istics)?[0-9]*[_.-]/
+        whiteLists:
+          ads:
+            - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+            - https://raw.githubusercontent.com/CraightonH/cluster-k3s/main/cluster/apps/networking/blocky/my-whitelist.txt
+        clientGroupsBlock:
+          default:
+            - ads
+      clientLookup:
+        upstream: tcp+udp:${DEFAULT_GATEWAY}
+      prometheus:
+        enable: false
+        path: /metrics
+      bootstrapDns: tcp+udp:1.1.1.1
+      ports:
+        http: 4000
+      log:
+        format: json
+        level: warn
+        privacy: true
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: "blocky-config"
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - blocky
+              topologyKey: kubernetes.io/hostname
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 100m
+      limits:
+        memory: 750Mi

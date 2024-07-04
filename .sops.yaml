@@ -10,3 +10,7 @@ creation_rules:
     key_groups:
       - age:
           - "age16ruxdp45mj6tc80n6fu3x5xvqccl963ms8qln8sah6plxyvcj47st7u2yf"
+  - path_regex: config.yaml|kubeconfig
+    key_groups:
+      - age:
+        - "age16ruxdp45mj6tc80n6fu3x5xvqccl963ms8qln8sah6plxyvcj47st7u2yf"

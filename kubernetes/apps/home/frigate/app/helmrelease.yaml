@@ -41,10 +41,10 @@ spec:
         ports:
           http:
             enabled: true
-            nodePort: 31934
+            # nodePort: 31934
           rtmp:
             enabled: true
-            nodePort: 31935
+            # nodePort: 31935
 
     ingress:
       main:

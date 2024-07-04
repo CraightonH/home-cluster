@@ -5,7 +5,7 @@ metadata:
   name: &app rancher
   namespace: flux-system
 spec:
-  suspend: true
+  suspend: true # TODO: enable when rancher handles k8s version
   targetNamespace: cattle-system
   commonMetadata:
     labels:

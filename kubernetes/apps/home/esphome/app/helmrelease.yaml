@@ -37,7 +37,7 @@ spec:
         server: ${SECRET_NAS_ADDRESS}
         path: /volume6/home-assistant-config
         subPath: esphome
-        mountPath: /media
+        mountPath: /media # TODO: find correct folder for mounting
     service:
       main:
         ports:

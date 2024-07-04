@@ -8,3 +8,4 @@ resources:
   - ./teslamate/ks.yaml
   - ./frigate/ks.yaml
   - ./esphome/ks.yaml
+  - ./ema-reader/ks.yaml

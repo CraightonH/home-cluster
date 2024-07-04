@@ -72,6 +72,7 @@ spec:
           hubble.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           longhorn.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           frigate.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
+          esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           # games.${SECRET_DOMAIN}: ${GAME_SERVER_IP} # TODO: Setup once games servers are running
           ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS}
       blocking:

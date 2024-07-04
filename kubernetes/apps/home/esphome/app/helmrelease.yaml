@@ -1,0 +1,60 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: esphome
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: esphome
+      version: 8.4.2
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home # TODO: migrate to bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    image:
+      repository: esphome/esphome
+      tag: 2024.6.6
+      pullPolicy: IfNotPresent
+    replicaCount: 0
+    dnsPolicy: ClusterFirstWithHostNet
+    hostNetwork: true
+    persistence:
+      config:
+        enabled: true
+        type: nfs
+        server: ${SECRET_NAS_ADDRESS}
+        path: /volume6/home-assistant-config
+        subPath: esphome
+        mountPath: /media
+    service:
+      main:
+        ports:
+          http:
+            enabled: true
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: internal
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: "esphome.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "esphome.${SECRET_DOMAIN}"
+            secretName: "esphome-tls"

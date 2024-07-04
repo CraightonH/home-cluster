@@ -6,3 +6,4 @@ resources:
   - ./home-assistant/ks.yaml
   - ./mqtt/ks.yaml
   - ./teslamate/ks.yaml
+  - ./frigate/ks.yaml

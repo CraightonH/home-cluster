@@ -21,6 +21,7 @@ spec:
       namespace: kube-system
     - name: mqtt
   install:
+    timeout: 2m
     remediation:
       retries: 3
   upgrade:

@@ -6,10 +6,6 @@ metadata:
   namespace: network
 spec:
   type: ExternalName
-  ports:
-  - name: https
-    port: 443
-    targetPort: 5001
   externalName: "${SECRET_NAS_ADDRESS}"
 ---
 apiVersion: networking.k8s.io/v1
@@ -20,6 +16,11 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+    # nginx.ingress.kubernetes.io/server-snippets: | # proxy_pass
+    #   location / {
+    #     proxy_pass https://${SECRET_NAS_ADDRESS}:5001;
+    #     proxy_set_header X-Real_IP $remote_addr;
+    #   }
 spec:
   ingressClassName: external
   tls:
@@ -36,4 +37,4 @@ spec:
             service:
               name: nas
               port:
-                number: 443
+                number: 5001

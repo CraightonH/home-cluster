@@ -21,10 +21,12 @@ spec:
       namespace: kube-system
     - name: mqtt
   install:
+    timeout: 10m
     remediation:
       retries: 1
       remediateLastFailure: true
   upgrade:
+    timeout: 10m
     cleanupOnFail: true
     remediation:
       retries: 1

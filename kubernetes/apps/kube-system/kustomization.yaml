@@ -9,4 +9,5 @@ resources:
   - ./reloader/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./spegel/ks.yaml
+  - ./kube-dashboard/ks.yaml
   - ./nfs-subdir-external-provisioner/ks.yaml

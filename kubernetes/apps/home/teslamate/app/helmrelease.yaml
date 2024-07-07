@@ -59,13 +59,16 @@ spec:
     postgresql:
       enabled: true
       primary:
-        # livenessProbe:
-        #   enabled: false
-        # readinessProbe:
-        #   enabled: false
+        livenessProbe:
+          enabled: false
+        readinessProbe:
+          enabled: false
         startupProbe:
-          enabled: true
+          enabled: false
+          initialDelaySeconds: 30
+          periodSeconds: 10
           failureThreshold: 40 # up to 6.5 minutes
+          successThreshold: 1
         persistence:
           enabled: true
           storageClass: nfs-client

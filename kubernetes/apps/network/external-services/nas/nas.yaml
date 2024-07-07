@@ -12,23 +12,6 @@ spec:
     targetPort: 5001
   externalName: "${SECRET_NAS_ADDRESS}"
 ---
-apiVersion: discovery.k8s.io/v1
-kind: EndpointSlice
-metadata:
-  name: nas
-  namespace: network
-  labels:
-    kubernetes.io/service-name: nas
-addressType: IPv4
-ports:
-  - name: https # should match with the name of the service port defined above
-    appProtocol: http
-    protocol: TCP
-    port: 5001
-endpoints:
-  - addresses:
-      - "${SECRET_NAS_ADDRESS}"
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

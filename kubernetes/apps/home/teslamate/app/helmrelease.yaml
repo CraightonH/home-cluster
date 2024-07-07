@@ -65,7 +65,7 @@ spec:
         #   enabled: false
         startupProbe:
           enabled: true
-          failureThreshold: 40 # up to 5 minutes
+          failureThreshold: 40 # up to 6.5 minutes
         persistence:
           enabled: true
           storageClass: nfs-client

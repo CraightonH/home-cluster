@@ -58,12 +58,6 @@ spec:
     postgresql:
       enabled: true
       primary:
-        livenessProbe:
-          enabled: false
-        readinessProbe:
-          enabled: false
-        startupProbe:
-          enabled: false
         persistence:
           enabled: true
           storageClass: nfs-client

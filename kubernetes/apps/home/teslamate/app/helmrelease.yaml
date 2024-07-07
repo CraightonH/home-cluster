@@ -67,7 +67,7 @@ spec:
           enabled: false
           initialDelaySeconds: 30
           periodSeconds: 10
-          failureThreshold: 40 # up to 6.5 minutes
+          failureThreshold: 50
           successThreshold: 1
         persistence:
           enabled: true

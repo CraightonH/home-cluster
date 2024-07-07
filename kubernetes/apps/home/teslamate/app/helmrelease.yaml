@@ -21,13 +21,13 @@ spec:
       namespace: kube-system
     - name: mqtt
   install:
-    timeout: 10m
     remediation:
-      retries: 3
+      retries: 1
+      remediateLastFailure: true
   upgrade:
     cleanupOnFail: true
     remediation:
-      retries: 3
+      retries: 1
   releaseName: *app
   values:
     image:
@@ -63,12 +63,12 @@ spec:
         #   enabled: true
         # readinessProbe:
         #   enabled: true
-        # startupProbe:
-        #   enabled: true
-        #   initialDelaySeconds: 30
-        #   periodSeconds: 10
-        #   failureThreshold: 50
-        #   successThreshold: 1
+        startupProbe:
+          enabled: true
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 50
+          successThreshold: 1
         terminationGracePeriodSeconds: 300 # give it 5 minutes to stop
         persistence:
           enabled: true

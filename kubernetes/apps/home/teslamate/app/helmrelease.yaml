@@ -21,12 +21,12 @@ spec:
       namespace: kube-system
     - name: mqtt
   install:
-    timeout: 10m
+    timeout: 10m # give it 10 minutes to install
     remediation:
       retries: 1
       remediateLastFailure: true
   upgrade:
-    timeout: 10m
+    timeout: 10m # give it 10 minutes to update
     cleanupOnFail: true
     remediation:
       retries: 1
@@ -69,9 +69,9 @@ spec:
           enabled: true
           initialDelaySeconds: 30
           periodSeconds: 10
-          failureThreshold: 50
+          failureThreshold: 60
           successThreshold: 1
-        terminationGracePeriodSeconds: 300 # give it 5 minutes to stop
+        terminationGracePeriodSeconds: 600 # give it 10 minutes to stop
         persistence:
           enabled: true
           storageClass: nfs-client

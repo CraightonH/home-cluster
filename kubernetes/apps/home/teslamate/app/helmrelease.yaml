@@ -60,9 +60,9 @@ spec:
       enabled: true
       primary:
         livenessProbe:
-          enabled: false
+          enabled: true
         readinessProbe:
-          enabled: false
+          enabled: true
         startupProbe:
           enabled: true
           initialDelaySeconds: 30

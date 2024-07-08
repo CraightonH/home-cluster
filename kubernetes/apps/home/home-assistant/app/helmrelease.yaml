@@ -36,7 +36,7 @@ spec:
 
     controllers:
       home-assistant:
-        replicas: 0
+        replicas: 1
         strategy: Recreate
         containers:
           home-assistant:
@@ -61,7 +61,7 @@ spec:
           codeserver:
             image:
               repository: codercom/code-server
-              tag: 4.90.2
+              tag: 4.90.3
             env:
               TZ: America/Denver
             workingDir: /config

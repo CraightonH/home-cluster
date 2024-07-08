@@ -36,6 +36,7 @@ spec:
 
     controllers:
       home-assistant:
+        replicas: 0
         strategy: Recreate
         containers:
           home-assistant:
@@ -58,6 +59,7 @@ spec:
                   failureThreshold: 3
               readiness: *haprobes
           codeserver:
+            replicas: 0
             image:
               repository: codercom/code-server
               tag: 4.90.2

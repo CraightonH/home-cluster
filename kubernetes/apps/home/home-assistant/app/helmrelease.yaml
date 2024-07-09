@@ -72,10 +72,10 @@ spec:
               - "none"
             resources:
               requests:
-                cpu: 100m
+                cpu: 500m
                 memory: 100Mi
               limits:
-                cpu: 500m
+                cpu: 1.5
                 memory: 500Mi
             probes:
               liveness: &codeprobes

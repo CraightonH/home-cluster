@@ -67,27 +67,33 @@ spec:
         enabled: true
         data:
           config.yml: |
+            # go2rtc:
+            #   streams:
+            #     back:
+            #       - rtsp://user:password@10.0.10.10:554/cam/realmonitor?channel=1&subtype=2
             mqtt:
+              enabled: False
               host: mqtt
-            objects:
-              track:
-                - person
-            ffmpeg:
-              output_args:
-                record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -c:a aac
-            record:
-              enabled: True
-              retain:
-                days: 5
-            snapshots:
-              enabled: True
-              timestamp: False
-              bounding_box: True
-              height: 450
-              retain:
-                default: 5
+            # objects:
+            #   track:
+            #     - person
+            # ffmpeg:
+            #   output_args:
+            #     record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -c:a aac
+            # record:
+            #   enabled: True
+            #   retain:
+            #     days: 5
+            # snapshots:
+            #   enabled: True
+            #   timestamp: False
+            #   bounding_box: True
+            #   height: 450
+            #   retain:
+            #     default: 5
             cameras:
               downstairs:
+                enabled: False
                 ffmpeg:
                   inputs:
                     - path: ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
@@ -101,6 +107,7 @@ spec:
                   # mask:
                     # - 1373,1080,1371,1005,1870,1005,1870,1080
               cayderoom:
+                enabled: False
                 ffmpeg:
                   inputs:
                     - path: ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
@@ -113,11 +120,11 @@ spec:
                 # motion:
                   # mask:
                     # - 1373,1080,1371,1005,1870,1005,1870,1080
-            database:
-              path: /media/frigate.db
-            detectors:
-              cpu1:
-                type: cpu
+            # database:
+            #   path: /media/frigate.db
+            # detectors:
+            #   cpu1:
+            #     type: cpu
 
     persistence:
       media:

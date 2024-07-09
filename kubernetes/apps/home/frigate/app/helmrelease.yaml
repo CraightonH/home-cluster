@@ -2,18 +2,17 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: frigate
+  name: &app frigate
   namespace: home
 spec:
   interval: 30m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: frigate
-      version: 8.2.2
+      chart: app-template
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home # TODO: migrate to bjw-s
+        name: bjw-s
         namespace: flux-system
   install:
     remediation:
@@ -23,33 +22,45 @@ spec:
     remediation:
       retries: 3
   values:
-    image:
-      repository: ghcr.io/blakeblackshear/frigate
-      tag: 0.13.2
-      pullPolicy: IfNotPresent
-    replicaCount: 0
-    strategy:
-      type: Recreate
-    podAnnotations:
-      reloader.stakater.com/auto: "true"
+    global:
+      fullnameOverride: *app
 
-    env:
-      TZ: "America/Denver"
+    defaultPodOptions:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+    controllers:
+      main:
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: ghcr.io/blakeblackshear/frigate
+              tag: 0.13.2
+            env:
+              TZ: America/Denver
 
     service:
       main:
+        controller: main
+        nameOverride: "{{ .Values.global.fullnameOverride }}"
         ports:
           http:
-            enabled: true
-            # nodePort: 31934
-          rtmp:
-            enabled: true
-            # nodePort: 31935
+            port: 5000
 
     ingress:
       main:
         enabled: true
-        ingressClassName: internal
+        className: internal
+        nameOverride: "{{ .Values.global.fullnameOverride }}"
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
         hosts:
@@ -62,7 +73,7 @@ spec:
               - "frigate.${SECRET_DOMAIN}"
             secretName: "frigate-tls"
 
-    configmap:
+    configMaps:
       config:
         enabled: true
         data:
@@ -120,8 +131,8 @@ spec:
                 # motion:
                   # mask:
                     # - 1373,1080,1371,1005,1870,1005,1870,1080
-            # database:
-            #   path: /media/frigate.db
+            database:
+              path: /media/frigate.db
             # detectors:
             #   cpu1:
             #     type: cpu
@@ -134,22 +145,16 @@ spec:
         type: nfs
         server: ${SECRET_NAS_ADDRESS}
         path: /volume10/nvr
-        mountPath: /media
-      # -- Configure a temporary cache. See [docs](https://blakeblackshear.github.io/frigate/) for more details..
-      # @default -- See values.yaml
+        advancedMounts:
+          main:
+            main:
+              - path: /media
       cache:
         enabled: true
         type: emptyDir
         medium: Memory
         sizeLimit: 1Gi
-        mountPath: /dev/shm
-
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/arch
-              operator: In
-              values:
-              - amd64
+        advancedMounts:
+          main:
+            main:
+              - path: /dev/shm

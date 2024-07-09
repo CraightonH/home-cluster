@@ -24,8 +24,8 @@ spec:
       retries: 3
   values:
     image:
-      repository: blakeblackshear/frigate
-      tag: 0.11.1
+      repository: ghcr.io/blakeblackshear/frigate
+      tag: 0.13.2
       pullPolicy: IfNotPresent
     replicaCount: 0
     strategy:
@@ -86,8 +86,6 @@ spec:
               height: 450
               retain:
                 default: 5
-            rtmp:
-              enabled: True
             cameras:
               downstairs:
                 ffmpeg:

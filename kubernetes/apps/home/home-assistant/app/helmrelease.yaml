@@ -170,7 +170,7 @@ spec:
         advancedMounts:
           home-assistant:
             home-assistant:
-              - path: /media
+              - path: /mnt/media/nvr
                 readOnly: true
 
     serviceAccount:

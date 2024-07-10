@@ -54,7 +54,18 @@ spec:
         nameOverride: "{{ .Values.global.fullnameOverride }}"
         ports:
           http:
+            primary: true
             port: 5000
+            protocol: HTTP
+          rtsp:
+            port: 8554
+            protocol: TCP
+          webrtctcp:
+            port: 8555
+            protocol: TCP
+          webrtcudp:
+            port: 8555
+            protocol: UDP
 
     ingress:
       main:
@@ -139,6 +150,13 @@ spec:
             #     type: cpu
 
     persistence:
+      config:
+        type: configMap
+        name: "{{ .Values.global.fullnameOverride }}-config"
+        advancedMounts:
+          main:
+            main:
+              - path: /config
       media:
         # In case of db corruption, shutdown frigate, mount this volume to workstation and run following command
         # echo '.dump' | sqlite3 frigate.db | sqlite3 repaired_frigate.db
@@ -158,4 +176,4 @@ spec:
         advancedMounts:
           main:
             main:
-              - path: /dev/shm
+              - path: /tmp/cache

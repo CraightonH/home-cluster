@@ -90,12 +90,12 @@ spec:
         enabled: true
         data:
           config.yml: |
-            go2rtc:
-              streams:
-                downstairs:
-                  - ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
-                cayderoom:
-                  - ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
+            # go2rtc:
+            #   streams:
+            #     downstairs:
+            #       - ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
+            #     cayderoom:
+            #       - ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
             mqtt:
               enabled: True
               host: mqtt
@@ -104,7 +104,7 @@ spec:
                 - person
             ffmpeg:
               output_args:
-                record: preset-record-generic-audio-copy # -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -c:a aac
+                record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -c:a aac
             # record:
             #   retain:
             #     days: 5
@@ -125,9 +125,12 @@ spec:
                         - detect
                         - record
                 detect:
+                  enabled: True
                   height: 1080
                   width: 1920
                 record:
+                  enabled: True
+                snapshots:
                   enabled: True
                 # motion:
                   # mask:
@@ -141,9 +144,12 @@ spec:
                         - detect
                         - record
                 detect:
+                  enabled: True
                   height: 1080
                   width: 1920
                 record:
+                  enabled: True
+                snapshots:
                   enabled: True
                 # motion:
                   # mask:

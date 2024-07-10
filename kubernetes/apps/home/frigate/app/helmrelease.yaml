@@ -90,12 +90,12 @@ spec:
         enabled: true
         data:
           config.yml: |
-            # go2rtc:
-            #   streams:
-            #     downstairs:
-            #       - ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
-            #     cayderoom:
-            #       - ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
+            go2rtc:
+              streams:
+                downstairs:
+                  - ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
+                cayderoom:
+                  - ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
             mqtt:
               enabled: True
               host: mqtt

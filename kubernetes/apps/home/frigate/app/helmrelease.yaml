@@ -90,33 +90,34 @@ spec:
         enabled: true
         data:
           config.yml: |
-            # go2rtc:
-            #   streams:
-            #     back:
-            #       - rtsp://user:password@10.0.10.10:554/cam/realmonitor?channel=1&subtype=2
+            go2rtc:
+              streams:
+                downstairs:
+                  - ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
+                cayderoom:
+                  - ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
             mqtt:
-              enabled: False
+              enabled: True
               host: mqtt
-            # objects:
-            #   track:
-            #     - person
-            # ffmpeg:
-            #   output_args:
-            #     record: -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -c:a aac
+            objects:
+              track:
+                - person
+            ffmpeg:
+              output_args:
+                record: preset-record-generic-audio-copy # -f segment -segment_time 10 -segment_format mp4 -reset_timestamps 1 -strftime 1 -c copy -c:a aac
             # record:
-            #   enabled: True
             #   retain:
             #     days: 5
-            # snapshots:
-            #   enabled: True
-            #   timestamp: False
-            #   bounding_box: True
-            #   height: 450
-            #   retain:
-            #     default: 5
+            snapshots:
+              enabled: True
+              # timestamp: False # default
+              # bounding_box: True # default
+              height: 450
+              retain:
+                default: 5
             cameras:
               downstairs:
-                enabled: False
+                enabled: True
                 ffmpeg:
                   inputs:
                     - path: ${SECRET_CAMERA_CONNECTION_DOWNSTAIRS}
@@ -126,11 +127,13 @@ spec:
                 detect:
                   height: 1080
                   width: 1920
+                record:
+                  enabled: True
                 # motion:
                   # mask:
                     # - 1373,1080,1371,1005,1870,1005,1870,1080
               cayderoom:
-                enabled: False
+                enabled: True
                 ffmpeg:
                   inputs:
                     - path: ${SECRET_CAMERA_CONNECTION_CAYDEROOM}
@@ -140,14 +143,16 @@ spec:
                 detect:
                   height: 1080
                   width: 1920
+                record:
+                  enabled: True
                 # motion:
                   # mask:
                     # - 1373,1080,1371,1005,1870,1005,1870,1080
             database:
               path: /media/frigate.db
-            # detectors:
-            #   cpu1:
-            #     type: cpu
+            detectors:
+              cpu1:
+                type: cpu
 
     persistence:
       config:

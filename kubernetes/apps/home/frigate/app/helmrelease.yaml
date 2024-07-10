@@ -157,6 +157,8 @@ spec:
           main:
             main:
               - path: /config
+                subPath: config.yml
+                readOnly: false
       media:
         # In case of db corruption, shutdown frigate, mount this volume to workstation and run following command
         # echo '.dump' | sqlite3 frigate.db | sqlite3 repaired_frigate.db

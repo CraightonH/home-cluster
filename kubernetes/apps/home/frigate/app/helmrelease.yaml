@@ -156,7 +156,7 @@ spec:
         advancedMounts:
           main:
             main:
-              - path: /config
+              - path: /config/config.yml
                 subPath: config.yml
                 readOnly: false
       media:

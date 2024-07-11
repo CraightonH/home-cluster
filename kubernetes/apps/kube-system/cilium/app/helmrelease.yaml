@@ -54,6 +54,8 @@ spec:
           enabled: true
           className: internal
           hosts: ["hubble.${SECRET_DOMAIN}"]
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-production
     operator:
       prometheus:
         enabled: true

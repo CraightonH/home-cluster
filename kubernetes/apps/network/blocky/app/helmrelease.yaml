@@ -81,7 +81,7 @@ spec:
         denylists:
           ads:
             - https://raw.githubusercontent.com/CraightonH/home-cluster/main/kubernetes/apps/network/blocky/app/my-blacklist.txt
-            - https://raw.githubusercontent.com/ookangzheng/dbl-oisd-nl/master/dbl_light.txt
+            # - https://raw.githubusercontent.com/ookangzheng/dbl-oisd-nl/master/dbl_light.txt
             - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
             - https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
             - |

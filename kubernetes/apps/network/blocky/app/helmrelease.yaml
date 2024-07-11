@@ -74,14 +74,12 @@ spec:
           frigate.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           k8s.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          # nas.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS} # for some reason adding this breaks blocky with no errors
           # games.${SECRET_DOMAIN}: ${GAME_SERVER_IP} # TODO: Setup once games servers are running
           ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS}
       blocking:
         denylists:
           ads:
             - https://raw.githubusercontent.com/CraightonH/home-cluster/main/kubernetes/apps/network/blocky/app/my-blacklist.txt
-            # - https://raw.githubusercontent.com/ookangzheng/dbl-oisd-nl/master/dbl_light.txt
             - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
             - https://s3.amazonaws.com/lists.disconnect.me/simple_tracking.txt
             - |

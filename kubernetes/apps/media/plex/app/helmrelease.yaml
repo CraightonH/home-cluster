@@ -36,8 +36,8 @@ spec:
         containers:
           main:
             image:
-              repository: plexinc/pms-docker
-              tag: 1.40.4.8679-424562606
+              repository: ghcr.io/onedr0p/plex
+              tag: 1.40.5.8854-f36c552fd
             env:
               TZ: America/Denver
               ALLOWED_NETWORKS: 192.168.1.0/255.255.255.0

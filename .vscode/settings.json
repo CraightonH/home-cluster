@@ -13,7 +13,7 @@
     "vs-kubernetes": {
         "vs-kubernetes.kubeconfig": "./kubeconfig",
         "vs-kubernetes.knownKubeconfigs": [
-          "./kubeconfig"
-      ]
+            "./kubeconfig"
+        ]
     }
 }

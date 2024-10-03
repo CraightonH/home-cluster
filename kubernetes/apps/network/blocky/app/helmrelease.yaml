@@ -64,9 +64,10 @@ spec:
       prometheusRule:
         enabled: false
     config: |
-      upstream:
-        default:
-          - ${SECRET_DEFAULT_GATEWAY}
+      upstreams:
+        groups:
+          default:
+            - ${SECRET_DEFAULT_GATEWAY}
       customDNS:
         mapping:
           hubble.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}

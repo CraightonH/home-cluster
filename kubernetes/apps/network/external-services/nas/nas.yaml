@@ -6,9 +6,7 @@ metadata:
   namespace: network
 spec:
   type: ExternalName
-  externalName: "nas.${SECRET_DOMAIN}"
-  externalIPs:
-    - "${SECRET_NAS_ADDRESS}"
+  externalName: nas
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -17,6 +15,7 @@ metadata:
   namespace: network
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    cert-manager.io/cluster-issuer: letsencrypt-production
     # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
     # nginx.ingress.kubernetes.io/server-snippets: | # proxy_pass
     #   location / {

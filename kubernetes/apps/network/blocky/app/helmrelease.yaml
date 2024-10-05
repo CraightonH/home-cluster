@@ -76,6 +76,7 @@ spec:
           esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           k8s.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           # games.${SECRET_DOMAIN}: ${GAME_SERVER_IP} # TODO: Setup once games servers are running
+          # nas.${SECRET_DOMAIN}: ${SECRET_NAS_ADDRESS}
           ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS}
       blocking:
         denylists:

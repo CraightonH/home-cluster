@@ -10,7 +10,7 @@ spec:
   - name: https
     port: 443
     targetPort: 5001
-  externalName: "${NAS_ADDRESS}"
+  externalName: "${SECRET_NAS_ADDRESS}"
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

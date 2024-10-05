@@ -21,11 +21,11 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     cert-manager.io/cluster-issuer: letsencrypt-production
     # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-    # nginx.ingress.kubernetes.io/server-snippets: | # proxy_pass
-    #   location / {
-    #     proxy_pass https://${SECRET_NAS_ADDRESS}:5001;
-    #     proxy_set_header X-Real_IP $remote_addr;
-    #   }
+    nginx.ingress.kubernetes.io/server-snippets: | # proxy_pass
+      location / {
+        proxy_pass https://${SECRET_NAS_ADDRESS}:5001;
+        proxy_set_header X-Real_IP $remote_addr;
+      }
 spec:
   ingressClassName: internal
   tls:

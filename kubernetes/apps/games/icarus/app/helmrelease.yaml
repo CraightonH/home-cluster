@@ -56,6 +56,7 @@ spec:
               SERVER_PASSWORD: ${SECRET_ICARUS_SERVER_PASSWORD}
               SERVER_ADMIN_PASSWORD: ${SECRET_ICARUS_SERVER_ADMIN_PASSWORD}
               UPDATE_SKIP: true
+              SERVER_NAME: HancockIcarus
 
     service:
       game-service:
@@ -105,30 +106,32 @@ spec:
             paths:
             - path: /icarus
               service:
-                identifier: query-service
+                identifier: steam-query-service
         tls:
           - hosts:
               - games.${SECRET_DOMAIN}
             secretName: icarus-query-tls
 
     persistence:
-      config:
-        enabled: true
+      server:
         type: nfs
         server: ${SECRET_NAS_ADDRESS}
-        path: /volume6/home-assistant-config
-        globalMounts:
-          - path: /config
-      media:
-        enabled: true
-        type: nfs
-        server: ${SECRET_NAS_ADDRESS}
-        path: /volume10/nvr
+        path: /volume12/pvc/icarus/server
         advancedMounts:
-          home-assistant:
-            home-assistant:
-              - path: /mnt/media/nvr
-                readOnly: true
+          icarus:
+            icarus:
+              - path: /home/icarus/drive_c/icarus # See https://github.com/mornedhels/icarus-server?tab=readme-ov-file#volumes
+                readOnly: false
+      downloads:
+        enabled: true
+        type: nfs
+        server: ${SECRET_NAS_ADDRESS}
+        path: /volume12/pvc/icarus/downloads
+        advancedMounts:
+          icarus:
+            icarus:
+              - path: /opt/icarus # See https://github.com/mornedhels/icarus-server?tab=readme-ov-file#volumes
+                readOnly: false
 
     serviceAccount:
       create: false

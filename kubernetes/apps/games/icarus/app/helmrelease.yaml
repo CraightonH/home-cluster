@@ -64,7 +64,7 @@ spec:
         nameOverride: "{{ .Values.global.fullnameOverride }}-game-service"
         primary: true
         ports:
-          game:
+          http:
             type: NodePort
             port: *gameport
             protocol: UDP
@@ -72,7 +72,7 @@ spec:
         controller: "{{ .Values.global.fullnameOverride }}"
         nameOverride: "{{ .Values.global.fullnameOverride }}-steam-query-service" 
         ports:
-          query:
+          http:
             type: NodePort
             port: *steamqueryport
             protocol: UDP

@@ -1,0 +1,109 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.2.0/charts/other/app-template/values.schema.json
+
+defaultPodOptions:
+  # dnsPolicy: ClusterFirstWithHostNet
+  # hostNetwork: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - node5 # biggest node with most RAM. Server can require up to 16GB at times
+
+global:
+  fullnameOverride: icarus
+
+controllers:
+  icarus:
+    replicas: 1
+    containers:
+      icarus:
+        image:
+          repository: mornedhels/icarus-server
+          tag: latest
+        env:
+          TZ: America/Denver
+          SERVER_PORT: &gameport 32777
+          SERVER_QUERYPORT: &steamqueryport 32778
+          SERVER_PASSWORD: ${SECRET_ICARUS_SERVER_PASSWORD}
+          SERVER_ADMIN_PASSWORD: ${SECRET_ICARUS_SERVER_ADMIN_PASSWORD}
+          UPDATE_SKIP: true
+          SERVER_NAME: HancockIcarus
+
+service:
+  icarus:
+    controller: "{{ .Values.global.fullnameOverride }}"
+    primary: true
+    type: NodePort
+    ports:
+      game:
+        nodePort: *gameport
+        port: *gameport
+        protocol: UDP
+      query:
+        nodePort: *steamqueryport
+        port: *steamqueryport
+        protocol: UDP
+
+ingress:
+  icarus-game:
+    enabled: false # TODO: figure out udp routing with ingress-nginx (https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/)
+    className: external
+    nameOverride: icarus-game-server
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      external-dns.alpha.kubernetes.io/target: games.${SECRET_DOMAIN}
+    hosts:
+      - host: games.${SECRET_DOMAIN}
+        paths:
+          - path: /icarus
+            service:
+              identifier: game-service
+    tls:
+      - hosts:
+          - games.${SECRET_DOMAIN}
+        secretName: icarus-game-tls
+  icarus-query:
+    enabled: false # TODO: figure out udp routing with ingress-nginx (https://kubernetes.github.io/ingress-nginx/user-guide/exposing-tcp-udp-services/)
+    className: external
+    nameOverride: icarus-query
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production
+      external-dns.alpha.kubernetes.io/target: games.${SECRET_DOMAIN}
+    hosts:
+      - host: games.${SECRET_DOMAIN}
+        paths:
+        - path: /icarus
+          service:
+            identifier: steam-query-service
+    tls:
+      - hosts:
+          - games.${SECRET_DOMAIN}
+        secretName: icarus-query-tls
+
+persistence:
+  server:
+    type: nfs
+    server: ${SECRET_NAS_ADDRESS}
+    path: /volume12/pvc/icarus/server
+    advancedMounts:
+      icarus:
+        icarus:
+          - path: /home/icarus/drive_c/icarus # See https://github.com/mornedhels/icarus-server?tab=readme-ov-file#volumes
+            readOnly: false
+  downloads:
+    enabled: true
+    type: nfs
+    server: ${SECRET_NAS_ADDRESS}
+    path: /volume12/pvc/icarus/downloads
+    advancedMounts:
+      icarus:
+        icarus:
+          - path: /opt/icarus # See https://github.com/mornedhels/icarus-server?tab=readme-ov-file#volumes
+            readOnly: false
+
+serviceAccount:
+  create: false

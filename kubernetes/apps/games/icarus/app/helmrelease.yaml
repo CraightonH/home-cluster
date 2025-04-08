@@ -62,14 +62,13 @@ spec:
       icarus:
         controller: "{{ .Values.global.fullnameOverride }}"
         primary: true
+        type: NodePort
         ports:
           game:
-            type: NodePort
             nodePort: *gameport
             port: *gameport
             protocol: UDP
           query:
-            type: NodePort
             nodePort: *steamqueryport
             port: *steamqueryport
             protocol: UDP

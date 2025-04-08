@@ -51,8 +51,8 @@ spec:
               tag: latest
             env:
               TZ: America/Denver
-              SERVER_PORT: &gameport 32777
-              SERVER_QUERYPORT: &steamqueryport 32778
+              SERVER_PORT: &gameport 31777
+              SERVER_QUERYPORT: &steamqueryport 31778
               SERVER_PASSWORD: ${SECRET_ICARUS_SERVER_PASSWORD}
               SERVER_ADMIN_PASSWORD: ${SECRET_ICARUS_SERVER_ADMIN_PASSWORD}
               UPDATE_SKIP: true

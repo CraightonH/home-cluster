@@ -59,21 +59,18 @@ spec:
               SERVER_NAME: HancockIcarus
 
     service:
-      game-service:
+      icarus:
         controller: "{{ .Values.global.fullnameOverride }}"
-        nameOverride: "{{ .Values.global.fullnameOverride }}-game-service"
         primary: true
         ports:
-          http:
+          game:
             type: NodePort
+            nodePort: *gameport
             port: *gameport
             protocol: UDP
-      steam-query-service:
-        controller: "{{ .Values.global.fullnameOverride }}"
-        nameOverride: "{{ .Values.global.fullnameOverride }}-steam-query-service" 
-        ports:
-          http:
+          query:
             type: NodePort
+            nodePort: *steamqueryport
             port: *steamqueryport
             protocol: UDP
 

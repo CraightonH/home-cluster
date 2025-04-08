@@ -60,7 +60,7 @@ spec:
 
     service:
       icarus:
-        controller: "{{ .Values.global.fullnameOverride }}"
+        controller: icarus
         primary: true
         type: NodePort
         ports:

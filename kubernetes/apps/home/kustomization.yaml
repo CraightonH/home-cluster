@@ -9,4 +9,4 @@ resources:
   - ./frigate/ks.yaml
   - ./esphome/ks.yaml
   - ./ema-reader/ks.yaml
-  - ./whisper/ks.yaml
+  # - ./whisper/ks.yaml

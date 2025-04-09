@@ -20,3 +20,4 @@ resources:
   - ./k8s-at-home.yaml
   - ./nfs-subdir-external-provisioner.yaml
   - ./longhorn.yaml
+  - ./opea.yaml

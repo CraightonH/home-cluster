@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: whisper-pv
+  namespace: home
+spec:
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    path: /volume12/pvc/whisper
+    server: ${SECRET_NAS_ADDRESS}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: whisper-pvc
+  namespace: home
+spec:
+  storageClassName: nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi

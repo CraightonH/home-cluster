@@ -8,37 +8,135 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: whisper
-      version: 1.0.0
+      chart: app-template
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
-        name: opea
+        name: bjw-s
         namespace: flux-system
-  # dependsOn:
-  #   - name: ingress-nginx-internal
-  #     namespace: network
+  dependsOn:
+    - name: ingress-nginx-external
+      namespace: network
   install:
-    timeout: 15m
     remediation:
       retries: 3
-  upgrade:
     timeout: 15m
+  upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
+    timeout: 15m
   values:
-    ASR_MODEL_PATH: "openai/whisper-small"
-
     global:
-      modelUsePVC: whisper-pvc
-      HUGGINGFACEHUB_API_TOKEN: ${SECRET_HUGGINGFACEHUB_API_TOKEN}
+      fullnameOverride: whisper
 
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/hostname
-              operator: In
-              values:
-              - node5 # biggest node with most RAM. Server can require up to 16GB at times
+    defaultPodOptions:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+
+    controllers:
+      whisper:
+        replicas: 1
+        strategy: Recreate
+        containers:
+          whisper:
+            image:
+              repository: homeassistant/amd64-addon-whisper
+              tag: 2.4.0
+            env:
+              TZ: America/Denver
+              MODEL: tiny-int8
+              LANGUAGE: en
+            # probes: # TODO: investigate healthchecks
+            #   liveness: &haprobes
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /manifest.json
+            #         port: &haport 8123
+            #       initialDelaySeconds: 15
+            #       periodSeconds: 10
+            #       timeoutSeconds: 5
+            #       failureThreshold: 3
+            #   readiness: *haprobes
+
+    service:
+      whisper:
+        controller: whisper
+        nameOverride: "{{ .Values.global.fullnameOverride }}"
+        ports:
+          whisper:
+            port: 10300
+
+    configMaps:
+      config:
+        data:
+          run: |
+            #!/bin/bash
+            # vim: ft=bash
+            # shellcheck shell=bash
+            # ==============================================================================
+            # Start Whisper service
+            # ==============================================================================
+            # NOTE: modified the original https://github.com/home-assistant/addons/blob/master/whisper/rootfs/etc/s6-overlay/s6-rc.d/whisper/run
+            # to allow for configurations outside of supervised HA
+
+            if [ "$(uname -m)" == "x86_64" ] && ! grep -qw 'avx' /proc/cpuinfo; then
+                echo "Your CPU does not support Advanced Vector Extensions (AVX). Whisper will run slower than normal." >&2
+            fi
+
+            # Read model from environment variable, default to 'tiny-en' if not set
+            model="${MODEL:-tiny-en}"
+            if [ "${model}" = "custom" ]; then
+                # Override with custom model from environment variable
+                custom_model="${CUSTOM_MODEL}"
+                if [ -z "${custom_model}" ]; then
+                    echo "Error: CUSTOM_MODEL is not set for custom model" >&2
+                    exit 1
+                fi
+                model="${custom_model}"
+            fi
+
+            # Debug logging flag
+            if [ "${DEBUG_LOGGING:-false}" = "true" ]; then
+                flags+=('--debug')
+            fi
+
+            # Execute the Whisper service
+            exec python3 -m wyoming_faster_whisper \
+                --uri 'tcp://0.0.0.0:10300' \
+                --model "${model}" \
+                --beam-size "${BEAM_SIZE:-5}" \
+                --language "${LANGUAGE:-en}" \
+                --initial-prompt "${INITIAL_PROMPT:-}" \
+                --data-dir /data \
+                --download-dir /data ${flags[@]}
+
+    persistence:
+      config:
+        type: configMap
+        advancedMounts:
+          whisper:
+            whisper:
+              - path: /etc/s6-overlay/s6-rc.d/run
+                readOnly: true
+                subPath: run
+      data:
+        type: nfs
+        server: ${SECRET_NAS_ADDRESS}
+        path: /volume12/pvc/whisper
+        advancedMounts:
+          whisper:
+            whisper:
+              - path: /data
+                readOnly: false

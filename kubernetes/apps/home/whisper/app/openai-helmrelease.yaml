@@ -1,0 +1,44 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: whisper
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: whisper
+      version: 1.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: opea
+        namespace: flux-system
+  # dependsOn:
+  #   - name: ingress-nginx-internal
+  #     namespace: network
+  install:
+    timeout: 15m
+    remediation:
+      retries: 3
+  upgrade:
+    timeout: 15m
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    ASR_MODEL_PATH: "openai/whisper-small"
+
+    global:
+      modelUsePVC: whisper-pvc
+      HUGGINGFACEHUB_API_TOKEN: ${SECRET_HUGGINGFACEHUB_API_TOKEN}
+
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - node5 # biggest node with most RAM. Server can require up to 16GB at times

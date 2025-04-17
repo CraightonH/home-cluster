@@ -34,3 +34,4 @@ spec:
       ingressClassName: external
       extraAnnotations:
         cert-manager.io/cluster-issuer: "letsencrypt-production"
+        external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}

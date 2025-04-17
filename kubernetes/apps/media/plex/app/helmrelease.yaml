@@ -26,14 +26,14 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              # - key: kubernetes.io/arch
-              #   operator: In
-              #   values:
-              #   - amd64
-              - key: kubernetes.io/hostname
+              - key: kubernetes.io/arch
                 operator: In
                 values:
-                  - node1
+                - amd64
+              # - key: kubernetes.io/hostname
+              #   operator: In
+              #   values:
+              #     - node1
 
     controllers:
       main:

@@ -41,4 +41,4 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-              - node5 # biggest node with most RAM. Server can require up to 16GB at times
+              - node1 # biggest node with most RAM. Server can require up to 16GB at times

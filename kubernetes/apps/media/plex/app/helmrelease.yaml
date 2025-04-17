@@ -61,11 +61,11 @@ spec:
       main:
         controller: main
         nameOverride: "{{ .Values.global.fullnameOverride }}"
-        type: NodePort
+        # type: NodePort
         ports:
           http:
             port: *port
-            nodePort: *port
+            # nodePort: *port
 
     ingress:
       main:

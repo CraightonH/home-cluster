@@ -80,7 +80,6 @@ spec:
 
     configMaps:
       config:
-        nameOverride: "{{ .Values.global.fullnameOverride }}-config"
         data:
           run: |
             #!/bin/bash
@@ -125,13 +124,12 @@ spec:
     persistence:
       config:
         type: configMap
-        name: "{{ .Values.global.fullnameOverride }}-config"
+        name: whisper-config
         advancedMounts:
           whisper:
             whisper:
               - path: /etc/s6-overlay/s6-rc.d/run
                 readOnly: true
-                subPath: run
       data:
         type: nfs
         server: ${SECRET_NAS_ADDRESS}

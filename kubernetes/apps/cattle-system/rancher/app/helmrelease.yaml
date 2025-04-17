@@ -31,5 +31,6 @@ spec:
     hostname: rancher.${SECRET_DOMAIN}
     ingress:
       enabled: true
+      ingressClassName: external
       extraAnnotations:
         cert-manager.io/cluster-issuer: "letsencrypt-production"

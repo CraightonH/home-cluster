@@ -67,7 +67,7 @@ spec:
     service:
       main:
         controller: main
-        nameOverride: "{{ .Values.global.fullnameOverride }}"
+        # nameOverride: "{{ .Values.global.fullnameOverride }}"
         ports:
           tcp:
             port: 10300

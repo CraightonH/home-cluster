@@ -10,3 +10,4 @@ resources:
   - ./esphome/ks.yaml
   - ./ema-reader/ks.yaml
   - ./whisper/ks.yaml
+  - ./piper/ks.yaml

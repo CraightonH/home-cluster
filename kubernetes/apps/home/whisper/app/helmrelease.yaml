@@ -50,9 +50,20 @@ spec:
               TZ: America/Denver
               # MODEL: tiny-int8
               # LANGUAGE: en
-            args:
-              - "--model tiny-int8"
-              - "--language en"
+            command:
+              - python3
+              - '-m'
+              - wyoming_faster_whisper
+              - '--uri'
+              - tcp://0.0.0.0:10300
+              - '--data-dir'
+              - /data
+              - '--download-dir'
+              - /data
+              - '--model'
+              - tiny-int8
+              - '--language'
+              - en
             # probes: # TODO: investigate healthchecks
             #   liveness: &haprobes
             #     enabled: true

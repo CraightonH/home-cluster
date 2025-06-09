@@ -90,30 +90,30 @@ spec:
             fi
 
             # Read model from environment variable, default to 'tiny-en' if not set
-            model="${MODEL:-tiny-en}"
-            if [ "${model}" = "custom" ]; then
+            model="$${MODEL:-tiny-en}"
+            if [ "$${model}" = "custom" ]; then
                 # Override with custom model from environment variable
-                custom_model="${CUSTOM_MODEL}"
-                if [ -z "${custom_model}" ]; then
+                custom_model="$${CUSTOM_MODEL}"
+                if [ -z "$${custom_model}" ]; then
                     echo "Error: CUSTOM_MODEL is not set for custom model" >&2
                     exit 1
                 fi
-                model="${custom_model}"
+                model="$${custom_model}"
             fi
 
             # Debug logging flag
-            if [ "${DEBUG_LOGGING:-false}" = "true" ]; then
+            if [ "$${DEBUG_LOGGING:-false}" = "true" ]; then
                 flags+=('--debug')
             fi
 
             # Execute the Whisper service
             exec python3 -m wyoming_faster_whisper \
                 --uri 'tcp://0.0.0.0:10300' \
-                --model "${model}" \
-                --beam-size "${BEAM_SIZE:-5}" \
-                --language "${LANGUAGE:-en}" \
+                --model "$${model}" \
+                --beam-size "$${BEAM_SIZE:-5}" \
+                --language "$${LANGUAGE:-en}" \
                 --data-dir /data \
-                --download-dir /data ${flags[@]}
+                --download-dir /data $${flags[@]}
 
     persistence:
       config:

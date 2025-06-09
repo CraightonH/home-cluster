@@ -48,8 +48,11 @@ spec:
               tag: 2.4.0
             env:
               TZ: America/Denver
-              MODEL: tiny-int8
-              LANGUAGE: en
+              # MODEL: tiny-int8
+              # LANGUAGE: en
+            args:
+              - "--model tiny-int8"
+              - "--language en"
             # probes: # TODO: investigate healthchecks
             #   liveness: &haprobes
             #     enabled: true

@@ -52,7 +52,7 @@ spec:
               - bash
               - /run.sh
               - "--voice" 
-              - en_US-amy-high
+              - en_US-amy-medium
               # - python3
               # - '-m'
               # - wyoming_faster_whisper

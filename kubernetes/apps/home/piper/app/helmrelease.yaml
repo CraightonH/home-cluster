@@ -49,8 +49,10 @@ spec:
             env:
               TZ: America/Denver
             command:
-              - sleep
-              - "300"
+              - bash
+              - /run.sh
+              - "--voice" 
+              - en_US-amy-high
               # - python3
               # - '-m'
               # - wyoming_faster_whisper
@@ -84,6 +86,8 @@ spec:
         ports:
           tcp:
             port: 10200
+          http:
+            port: 5000
 
     persistence:
       data:

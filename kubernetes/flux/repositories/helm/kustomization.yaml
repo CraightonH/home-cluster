@@ -21,3 +21,4 @@ resources:
   - ./nfs-subdir-external-provisioner.yaml
   - ./longhorn.yaml
   - ./opea.yaml
+  - ./otwld.yaml

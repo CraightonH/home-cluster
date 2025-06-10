@@ -11,3 +11,4 @@ resources:
   - ./ema-reader/ks.yaml
   - ./whisper/ks.yaml
   - ./piper/ks.yaml
+  - ./ollama/ks.yaml

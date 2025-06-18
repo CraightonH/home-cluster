@@ -14,6 +14,9 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
   values:
     global:
       fullnameOverride: *app
@@ -41,7 +44,7 @@ spec:
           main:
             image:
               repository: plexinc/pms-docker
-              tag: 1.41.7.9823-59f304c16
+              tag: 1.41.8.9834-071366d65
             env:
               TZ: America/Denver
               ALLOWED_NETWORKS: 192.168.1.0/255.255.255.0

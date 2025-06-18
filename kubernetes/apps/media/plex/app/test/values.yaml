@@ -36,7 +36,6 @@ controllers:
 service:
   main:
     controller: main
-    nameOverride: "{{ .Values.global.fullnameOverride }}"
     type: NodePort
     ports:
       http:

@@ -59,7 +59,7 @@ spec:
               startup: *probes
       # TODO: Add git init container to install plex plugins
       # Pull git repo if exists or clone if it doesn't
-      # Audiobook agent: `git -C "/config/Library/Application Support/Plex Media Server/Plug-ins" pull || git clone https://github.com/djdembeck/Audnexus.bundle.git "/config/Library/Application Support/Plex Media Server/Plug-ins`"
+      # Audiobook agent: `git -C "/config/Library/Application Support/Plex Media Server/Plug-ins" pull || git clone https://github.com/djdembeck/Audnexus.bundle.git "/config/Library/Application Support/Plex Media Server/Plug-ins"`
 
     service:
       main:

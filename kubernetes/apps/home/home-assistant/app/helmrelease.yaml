@@ -42,7 +42,7 @@ spec:
           home-assistant:
             image:
               repository: ghcr.io/home-assistant/home-assistant
-              tag: 2025.5.3
+              tag: 2025.7.0
             env:
               TZ: America/Denver
             probes:

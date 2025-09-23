@@ -15,6 +15,10 @@ additionalApiServerCertSans: &sans
   - "192.168.1.249"
   - 127.0.0.1 # KubePrism
   - "node1"
+  - "node2"
+  - "node3"
+  - "node4"
+  - "node5"
 additionalMachineCertSans: *sans
 
 # Disable built-in Flannel to use Cilium
@@ -24,7 +28,7 @@ cniConfig:
 nodes:
   - hostname: "node1"
     ipAddress: "192.168.1.241"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     talosImageURL: factory.talos.dev/installer/48369893e1b56c3e2c53575db56df55a90e260135591a0456b128e3459151c7a
     controlPlane: true
     networkInterfaces:

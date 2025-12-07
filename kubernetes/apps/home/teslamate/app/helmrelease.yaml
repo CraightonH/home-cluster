@@ -34,7 +34,7 @@ spec:
   values:
     image:
       repository: teslamate/teslamate
-      tag: 2.2.0
+      tag: 1.29.2
     ingress:
       main:
         enabled: true
@@ -61,8 +61,6 @@ spec:
           name: teslamate-secrets
     postgresql:
       enabled: true
-      image:
-        tag: latest
       primary:
         # livenessProbe:
         #   enabled: true

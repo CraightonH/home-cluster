@@ -61,6 +61,8 @@ spec:
           name: teslamate-secrets
     postgresql:
       enabled: true
+      image:
+        tag: latest
       primary:
         # livenessProbe:
         #   enabled: true

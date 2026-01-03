@@ -1,0 +1,69 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: web-games
+  namespace: games
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  # dependsOn:
+  #   - name: ingress-nginx-external
+  #     namespace: network
+  install:
+    remediation:
+      retries: 3
+    timeout: 10m
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    global:
+      fullnameOverride: web-games
+
+    controllers:
+      web-games:
+        replicas: 1
+        containers:
+          web-games:
+            image:
+              repository: craighton/web-games
+              tag: v2026.1.1
+
+    service:
+      web-games:
+        controller: web-games
+        primary: true
+        ports:
+          game:
+            port: 3000
+            protocol: TCP
+
+    ingress:
+      web-games:
+        enabled: true
+        className: internal
+        nameOverride: web-games
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: kids.${SECRET_DOMAIN}
+            paths:
+              - path: /web-games
+                service:
+                  identifier: web-games
+        tls:
+          - hosts:
+              - kids.${SECRET_DOMAIN}
+            secretName: web-games-tls
+
+    serviceAccount:
+      create: false

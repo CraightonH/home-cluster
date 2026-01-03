@@ -19,8 +19,8 @@ spec:
   #     namespace: network
   install:
     remediation:
-      retries: 3
-    timeout: 10m
+      retries: 2
+    timeout: 3m
   upgrade:
     cleanupOnFail: true
     remediation:

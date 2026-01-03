@@ -57,7 +57,7 @@ spec:
         hosts:
           - host: kids.${SECRET_DOMAIN}
             paths:
-              - path: /web-games
+              - path: /
                 service:
                   identifier: web-games
         tls:

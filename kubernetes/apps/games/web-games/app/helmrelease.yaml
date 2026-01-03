@@ -36,7 +36,7 @@ spec:
           web-games:
             image:
               repository: craighton/web-games
-              tag: v2026.1.1
+              tag: 2026.1.1
 
     service:
       web-games:

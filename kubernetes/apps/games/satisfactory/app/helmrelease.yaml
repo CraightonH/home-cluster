@@ -93,6 +93,10 @@ spec:
             port: 7777
             nodePort: 7777
             protocol: TCP
+          game-messaging:
+            port: 8888
+            nodePort: 8888
+            protocol: TCP
 
     persistence:
       config:

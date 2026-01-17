@@ -74,7 +74,18 @@ spec:
                 memory: 12Gi
             probes:
               liveness:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /bin/sh
+                      - -c
+                      - /home/steam/healthcheck.sh
+                  initialDelaySeconds: 300
+                  periodSeconds: 30
+                  failureThreshold: 4
+                  successThreshold: 1
               readiness:
                 enabled: false
               startup:
@@ -87,15 +98,15 @@ spec:
         ports:
           game-udp:
             port: 7777
-            nodePort: 7777
+            nodePort: 30777
             protocol: UDP
           game-tcp:
             port: 7777
-            nodePort: 7777
+            nodePort: 30777
             protocol: TCP
           game-messaging:
             port: 8888
-            nodePort: 8888
+            nodePort: 30888
             protocol: TCP
 
     persistence:

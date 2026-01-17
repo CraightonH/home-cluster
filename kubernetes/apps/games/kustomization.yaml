@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./web-games/ks.yaml
+  - ./satisfactory/ks.yaml
   # - ./icarus/ks.yaml

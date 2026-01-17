@@ -1,0 +1,112 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: satisfactory
+  namespace: games
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+    timeout: 15m
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node1 # Satisfactory needs significant RAM (6-12GB)
+
+    global:
+      fullnameOverride: satisfactory
+
+    controllers:
+      satisfactory:
+        replicas: 1
+        containers:
+          satisfactory:
+            image:
+              repository: wolveix/satisfactory-server
+              tag: v1.8.7
+            env:
+              TZ: America/Denver
+              MAXPLAYERS: "4"
+              SERVERGAMEPORT: "7777"
+              SERVERQUERYPORT: "15777"
+              SERVERBEACONPORT: "15000"
+              PGID: "1000"
+              PUID: "1000"
+              AUTOPAUSE: "true"
+              AUTOSAVEINTERVAL: "300"
+              AUTOSAVENUM: "5"
+              AUTOSAVEONDISCONNECT: "true"
+              CRASHREPORT: "false"
+              DEBUG: "false"
+              DISABLESEASONALEVENTS: "false"
+              NETWORKQUALITY: "3"
+              ROOTLESS: "false"
+              SERVERNAME: "GigaFactoryTX"
+              SKIPUPDATE: "false"
+              STEAMBETA: "false"
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 500m
+              limits:
+                memory: 12Gi
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+
+    service:
+      satisfactory:
+        controller: satisfactory
+        type: NodePort
+        ports:
+          game:
+            port: 7777
+            nodePort: 7777
+            protocol: UDP
+          beacon:
+            port: 15000
+            nodePort: 15000
+            protocol: UDP
+          query:
+            port: 15777
+            nodePort: 15777
+            protocol: UDP
+
+    persistence:
+      config:
+        type: persistentVolumeClaim
+        storageClass: nfs-client
+        accessMode: ReadWriteOnce
+        size: 50Gi
+        advancedMounts:
+          satisfactory:
+            satisfactory:
+              - path: /config
+
+    serviceAccount:
+      create: false

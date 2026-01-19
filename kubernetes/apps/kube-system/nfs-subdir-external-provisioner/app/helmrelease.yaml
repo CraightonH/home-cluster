@@ -29,7 +29,6 @@ spec:
       defaultClass: false
       pathPattern: "${.PVC.namespace}-${.PVC.name}"
       archiveOnDelete: 'true'
-      reclaimPolicy: Retain
     affinity:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:

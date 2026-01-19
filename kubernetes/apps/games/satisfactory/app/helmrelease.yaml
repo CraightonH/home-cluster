@@ -116,6 +116,7 @@ spec:
         storageClass: nfs-client
         accessMode: ReadWriteOnce
         size: 50Gi
+        retain: true
         advancedMounts:
           satisfactory:
             satisfactory:

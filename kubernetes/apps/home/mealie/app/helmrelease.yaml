@@ -100,5 +100,6 @@ spec:
         storageClass: nfs-client
         accessMode: ReadWriteOnce
         size: 5Gi
+        retain: true
         globalMounts:
           - path: /app/data

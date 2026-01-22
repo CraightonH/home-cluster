@@ -40,10 +40,10 @@ spec:
               BASE_URL: "https://mealie.${SECRET_DOMAIN}"
               # Database
               DB_ENGINE: postgres
-              POSTGRES_USER: postgres
-              POSTGRES_SERVER: mealie-postgres-rw.db.svc.cluster.local
+              POSTGRES_USER: mealie
+              POSTGRES_SERVER: postgres-rw.db.svc.cluster.local
               POSTGRES_PORT: "5432"
-              POSTGRES_DB: app
+              POSTGRES_DB: mealie
             envFrom:
               - secretRef:
                   name: mealie-secret

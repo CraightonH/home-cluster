@@ -3,17 +3,23 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: mealie-postgres
+  name: postgres
 spec:
   instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 5Gi
+    size: 100Gi
     storageClass: nfs-client
   superuserSecret:
-    name: mealie-postgres-superuser
+    name: postgres-superuser
   enableSuperuserAccess: true
+  bootstrap:
+    initdb:
+      database: mealie
+      owner: mealie
+      secret:
+        name: postgres-user-mealie
   postgresql:
     parameters:
       max_connections: "100"

@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mealie
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  dependsOn:
+    - name: ingress-nginx-external
+      namespace: network
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      mealie:
+        containers:
+          mealie:
+            image:
+              repository: ghcr.io/mealie-recipes/mealie
+              tag: v2.6.0
+            env:
+              TZ: America/Denver
+              # General
+              ALLOW_SIGNUP: "false"
+              BASE_URL: "https://mealie.${SECRET_DOMAIN}"
+              # Database
+              DB_ENGINE: postgres
+              POSTGRES_USER: postgres
+              POSTGRES_SERVER: mealie-postgres-rw.db.svc.cluster.local
+              POSTGRES_PORT: "5432"
+              POSTGRES_DB: app
+            envFrom:
+              - secretRef:
+                  name: mealie-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/app/about
+                    port: &port 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+
+    service:
+      mealie:
+        controller: mealie
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      mealie:
+        enabled: true
+        className: external
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+        hosts:
+          - host: mealie.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: mealie
+                  port: http
+        tls:
+          - hosts:
+              - mealie.${SECRET_DOMAIN}
+            secretName: mealie-tls
+
+    persistence:
+      data:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: nfs-client
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        globalMounts:
+          - path: /app/data

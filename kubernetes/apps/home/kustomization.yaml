@@ -12,3 +12,4 @@ resources:
   - ./whisper/ks.yaml
   - ./piper/ks.yaml
   - ./ollama/ks.yaml
+  - ./mealie/ks.yaml

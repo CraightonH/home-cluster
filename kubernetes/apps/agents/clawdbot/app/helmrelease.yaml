@@ -104,15 +104,9 @@ spec:
             secretName: clawd-tls
 
     persistence:
-      config:
-        enabled: true
-        type: persistentVolumeClaim
-        storageClass: nfs-client
-        accessMode: ReadWriteOnce
-        size: 1Gi
-        retain: true
-        globalMounts:
-          - path: /home/node/.clawdbot
+      # Note: config PVC (clawdbot-config) is no longer needed
+      # .clawdbot data has been migrated into the workspace PVC
+      # The old PVC can be deleted after confirming stability
       workspace:
         enabled: true
         type: persistentVolumeClaim
@@ -121,4 +115,4 @@ spec:
         size: 10Gi
         retain: true
         globalMounts:
-          - path: /home/node/clawd
+          - path: /home/node

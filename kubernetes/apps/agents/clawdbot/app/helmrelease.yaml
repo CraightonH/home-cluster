@@ -71,11 +71,12 @@ spec:
             command:
               - node
               - dist/index.js
-              - gateway-daemon
-              - --bind
-              - lan
+              - gateway
               - --port
               - "18789"
+              - --bind
+              - lan
+              - --allow-unconfigured
 
     service:
       clawdbot:

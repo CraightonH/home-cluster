@@ -74,13 +74,12 @@ spec:
               limits:
                 memory: 2Gi
             command:
-              - node
-              - dist/index.js
-              - gateway
-              - --port
-              - "18789"
-              - --bind
-              - lan
+              - /bin/sh
+              - -c
+              - |
+                # Clean up stale lock files from previous runs (NAS persistence)
+                find /home/node/.clawdbot -name '*.lock' -delete 2>/dev/null || true
+                exec node dist/index.js gateway --port 18789 --bind lan
 
     service:
       clawdbot:

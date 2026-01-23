@@ -36,6 +36,7 @@ spec:
               TZ: America/Denver
               CLAWDBOT_GATEWAY_BIND: lan
               CLAWDBOT_GATEWAY_PORT: "18789"
+              CLAWDBOT_ALLOW_MULTI_GATEWAY: "1"
             envFrom:
               - secretRef:
                   name: clawdbot-secret
@@ -71,7 +72,7 @@ spec:
             command:
               - node
               - dist/index.js
-              - gateway-daemon
+              - gateway
               - --port
               - "18789"
               - --bind

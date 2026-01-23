@@ -23,3 +23,4 @@ resources:
   - ./longhorn.yaml
   - ./opea.yaml
   - ./otwld.yaml
+  - ./external-secrets.yaml

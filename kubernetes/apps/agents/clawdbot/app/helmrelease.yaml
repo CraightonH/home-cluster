@@ -85,6 +85,24 @@ spec:
           http:
             port: *port
 
+    ingress:
+      clawdbot:
+        enabled: true
+        className: internal
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: clawd.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: clawdbot
+                  port: http
+        tls:
+          - hosts:
+              - clawd.${SECRET_DOMAIN}
+            secretName: clawd-tls
+
     persistence:
       config:
         enabled: true

@@ -12,3 +12,4 @@ resources:
   - ./kubernetes-dashboard/ks.yaml
   - ./nfs-subdir-external-provisioner/ks.yaml
   - ./external-secrets/ks.yaml
+  - ./external-secrets/stores-ks.yaml

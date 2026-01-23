@@ -71,7 +71,7 @@ spec:
             command:
               - node
               - dist/index.js
-              - gateway
+              - gateway-daemon
               - --port
               - "18789"
               - --bind

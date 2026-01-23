@@ -1,0 +1,13 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: clawdbot-cluster-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: agents
+roleRef:
+  kind: ClusterRole
+  name: clawdbot-cluster-role
+  apiGroup: rbac.authorization.k8s.io

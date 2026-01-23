@@ -77,6 +77,10 @@ spec:
               - |
                 # Clean up stale lock files from previous runs (NAS persistence)
                 find /home/node/.clawdbot -name '*.lock' -delete 2>/dev/null || true
+                # Run startup wake in background (triggers heartbeat after channels ready)
+                if [ -x /home/node/clawd/scripts/startup-wake.sh ]; then
+                  /home/node/clawd/scripts/startup-wake.sh &
+                fi
                 exec node dist/index.js gateway --port 18789 --bind lan
 
     service:

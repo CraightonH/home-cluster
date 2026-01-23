@@ -23,6 +23,10 @@ spec:
     remediation:
       retries: 3
   values:
+    defaultPodOptions:
+      annotations:
+        secret.reloader.stakater.com/reload: clawdbot-secret
+
     controllers:
       clawdbot:
         containers:

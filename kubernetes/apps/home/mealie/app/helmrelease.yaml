@@ -38,6 +38,8 @@ spec:
               # General
               ALLOW_SIGNUP: "false"
               BASE_URL: "https://mealie.${SECRET_DOMAIN}"
+              DEFAULT_GROUP: "Home"
+              DEFAULT_HOUSEHOLD: "Family"
               # Database
               DB_ENGINE: postgres
               POSTGRES_USER: mealie

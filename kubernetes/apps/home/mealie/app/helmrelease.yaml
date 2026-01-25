@@ -32,7 +32,7 @@ spec:
           mealie:
             image:
               repository: ghcr.io/mealie-recipes/mealie
-              tag: v2.6.0
+              tag: v3.9.2
             env:
               TZ: America/Denver
               # General

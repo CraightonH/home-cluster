@@ -3,6 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
+  - ./boilerr/ks.yaml
   - ./web-games/ks.yaml
   - ./satisfactory/ks.yaml
   # - ./icarus/ks.yaml

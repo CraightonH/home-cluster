@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: boilerr
-      version: 0.3.0
+      version: 0.0.4
       sourceRef:
         kind: HelmRepository
         name: boilerr
@@ -29,7 +29,7 @@ spec:
     image:
       repository: ghcr.io/craightonh/boilerr
       pullPolicy: IfNotPresent
-      # tag defaults to chart appVersion (0.3.0)
+      # tag defaults to chart appVersion (0.0.4)
 
     controllerManager:
       logging:

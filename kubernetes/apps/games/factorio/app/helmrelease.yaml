@@ -26,10 +26,10 @@ spec:
     # Server identity
     name: factorio
 
-    # Factorio Docker image
+    # Factorio Docker image (rootless variant avoids NFS permission issues)
     image:
       repository: factoriotools/factorio
-      tag: "stable"
+      tag: "stable-rootless"
       pullPolicy: IfNotPresent
 
     # Resource allocation
@@ -108,10 +108,10 @@ spec:
             "maximum_segment_size_peer_count": 10
           }
 
-    # Security context
+    # Security context (rootless image runs as UID 1000)
     securityContext:
-      fsGroup: 845
-      runAsUser: 845
+      fsGroup: 1000
+      runAsUser: 1000
       runAsNonRoot: true
 
     # Optional: Pin to specific node if needed

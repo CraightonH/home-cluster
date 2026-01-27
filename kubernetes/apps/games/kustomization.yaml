@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./boilerr/ks.yaml
+  - ./factorio/ks.yaml
   - ./web-games/ks.yaml
   - ./satisfactory/ks.yaml
   # - ./icarus/ks.yaml

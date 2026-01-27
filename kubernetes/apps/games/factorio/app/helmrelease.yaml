@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: game-server
-      version: "1.0.2"
+      version: "1.0.3"
       sourceRef:
         kind: HelmRepository
         name: dedicated-game-servers
@@ -108,11 +108,15 @@ spec:
             "maximum_segment_size_peer_count": 10
           }
 
-    # Security context (rootless image runs as UID 1000)
-    securityContext:
+    # Pod-level security context (no runAsNonRoot to allow init container)
+    podSecurityContext:
       fsGroup: 1000
+
+    # Container-level security context  
+    containerSecurityContext:
       runAsUser: 1000
       runAsNonRoot: true
+      allowPrivilegeEscalation: false
 
     # Init container to fix NFS permissions for rootless image
     # Needed because existing PVC was created with UID 845 ownership

@@ -1,0 +1,9 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: dedicated-game-servers
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://craightonh.github.io/dedicated-game-servers/

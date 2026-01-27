@@ -123,6 +123,12 @@ spec:
           - sh
           - -c
           - |
+            echo "Creating Factorio directory structure..."
+            mkdir -p /factorio/saves
+            mkdir -p /factorio/config
+            mkdir -p /factorio/mods
+            mkdir -p /factorio/scenarios
+            mkdir -p /factorio/script-output
             echo "Fixing permissions on /factorio..."
             chown -R 1000:1000 /factorio
             chmod -R 775 /factorio

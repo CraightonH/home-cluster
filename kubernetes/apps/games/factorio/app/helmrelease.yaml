@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: factorio
-      version: "2026.01.1"
+      version: "2026.01.2"
       sourceRef:
         kind: HelmRepository
         name: dedicated-game-servers
@@ -70,41 +70,43 @@ spec:
       - name: GENERATE_NEW_SAVE
         value: "false"
 
-    # Factorio server settings (camelCase, converted to snake_case automatically)
+    # Factorio server settings (new structure with nested config)
     gameConfig:
-      enabled: true
-      mountPath: "/factorio/config"
-      serverSettings:
-        name: "Hancock Factorio"
-        description: "A Factorio server running on Kubernetes"
-        tags:
-          - game
-          - tags
-        maxPlayers: 10
-        visibility:
-          public: false
-          lan: true
-        username: ""
-        password: ""
-        token: ""
-        gamePassword: ""
-        requireUserVerification: false
-        maxUploadInKilobytesPerSecond: 0
-        maxUploadSlots: 5
-        minimumLatencyInTicks: 0
-        ignorePlayerLimitForReturningPlayers: false
-        allowCommands: "admins-only"
-        autosaveInterval: 10
-        autosaveSlots: 5
-        afkAutokickInterval: 0
-        autoPause: true
-        onlyAdminsCanPauseTheGame: true
-        autosaveOnlyOnServer: true
-        nonBlockingSaving: false
-        minimumSegmentSize: 25
-        minimumSegmentSizePeerCount: 20
-        maximumSegmentSize: 100
-        maximumSegmentSizePeerCount: 10
+      server-settings:
+        enabled: true
+        mountPath: "/factorio/config"
+        configFormat: json
+        config:
+          name: "Hancock Factorio"
+          description: "A Factorio server running on Kubernetes"
+          tags:
+            - game
+            - tags
+          max_players: 10
+          visibility:
+            public: false
+            lan: true
+          username: ""
+          password: ""
+          token: ""
+          game_password: ""
+          require_user_verification: false
+          max_upload_in_kilobytes_per_second: 0
+          max_upload_slots: 5
+          minimum_latency_in_ticks: 0
+          ignore_player_limit_for_returning_players: false
+          allow_commands: "admins-only"
+          autosave_interval: 10
+          autosave_slots: 5
+          afk_autokick_interval: 0
+          auto_pause: true
+          only_admins_can_pause_the_game: true
+          autosave_only_on_server: true
+          non_blocking_saving: false
+          minimum_segment_size: 25
+          minimum_segment_size_peer_count: 20
+          maximum_segment_size: 100
+          maximum_segment_size_peer_count: 10
 
     # Pod-level security context
     podSecurityContext:
@@ -125,16 +127,11 @@ spec:
           - sh
           - -c
           - |
-            echo "Creating Factorio directory structure..."
-            mkdir -p /factorio/saves
-            mkdir -p /factorio/config
-            mkdir -p /factorio/mods
-            mkdir -p /factorio/scenarios
-            mkdir -p /factorio/script-output
-            echo "Fixing permissions on /factorio..."
+            echo "Setting up /factorio directories and permissions..."
+            mkdir -p /factorio/saves /factorio/config /factorio/mods /factorio/scenarios /factorio/script-output
             chown -R 1000:1000 /factorio
             chmod -R 775 /factorio
-            echo "Permissions fixed!"
+            echo "Setup complete"
         volumeMounts:
           - name: data
             mountPath: /factorio

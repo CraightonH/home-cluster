@@ -1,0 +1,95 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: valheim
+  namespace: games
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: valheim
+      version: "2026.01.6"
+      sourceRef:
+        kind: HelmRepository
+        name: dedicated-game-servers
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+    timeout: 20m  # Valheim needs more time for initial download
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+    timeout: 20m
+  values:
+    # Server identity
+    name: valheim
+
+    # Valheim Docker image
+    image:
+      repository: lloesche/valheim-server
+      tag: latest
+      pullPolicy: IfNotPresent
+
+    # Resource allocation
+    resources:
+      requests:
+        memory: "3Gi"
+        cpu: "1000m"
+      limits:
+        memory: "6Gi"
+        cpu: "2000m"
+
+    # Persistent storage for world saves and config
+    persistence:
+      enabled: true
+      storageClass: "nfs-client"
+      size: "20Gi"
+      mountPath: "/config"
+
+    # Network configuration (NodePort for home cluster access)
+    service:
+      type: NodePort
+      ports:
+        - name: game
+          port: 2456
+          nodePort: 30456
+          protocol: UDP
+        - name: query
+          port: 2457
+          nodePort: 30457
+          protocol: UDP
+
+    # Environment variables for Valheim server
+    # Using map format for easy configuration
+    env:
+      SERVER_NAME: "Hancock Valheim"
+      WORLD_NAME: "Hancock"
+      SERVER_PASS: "hancock2026"
+      SERVER_PUBLIC: "false"
+      UPDATE_CRON: "*/15 * * * *"  # Check for updates every 15 minutes
+      UPDATE_IF_IDLE: "true"  # Only update when no players connected
+      RESTART_CRON: "0 5 * * *"  # Daily restart at 5 AM
+      RESTART_IF_IDLE: "true"  # Only restart when no players connected
+      BACKUPS: "true"
+      BACKUPS_CRON: "0 * * * *"  # Hourly backups
+      BACKUPS_DIRECTORY: "/config/backups"
+      BACKUPS_MAX_AGE: "3"  # Keep 3 days of backups
+      TZ: "America/Denver"
+
+    # Pod-level security context
+    podSecurityContext:
+      fsGroup: 1000
+
+    # Container-level security context
+    # Note: lloesche/valheim-server handles its own permission setup
+    containerSecurityContext:
+      capabilities:
+        add:
+          - SYS_NICE
+
+    # Optional: Pin to specific node if needed
+    nodeSelector: {}
+    tolerations: []

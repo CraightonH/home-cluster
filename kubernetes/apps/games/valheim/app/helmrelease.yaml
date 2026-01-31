@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: valheim-k8s
-      version: "*"  # Use latest version
+      version: "2.0.1"
       sourceRef:
         kind: HelmRepository
         name: valheim-k8s

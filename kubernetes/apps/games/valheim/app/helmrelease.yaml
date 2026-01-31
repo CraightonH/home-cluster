@@ -57,6 +57,11 @@ spec:
       repository: lloesche/valheim-server
       tag: latest
     
+    # Environment variables - set server port to match nodePort
+    env:
+      - name: SERVER_PORT
+        value: "30456"
+    
     # Optional: Node selector
     nodeSelector: {}
     tolerations: []

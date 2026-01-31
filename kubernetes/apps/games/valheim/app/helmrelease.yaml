@@ -48,7 +48,7 @@ spec:
     # Networking - NodePort for home cluster
     networking:
       serviceType: NodePort
-      gamePort: 2456
+      gamePort: 30456
       nodePort: 30456
       publishQueryPort: true
     

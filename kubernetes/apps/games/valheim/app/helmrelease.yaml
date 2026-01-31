@@ -67,7 +67,11 @@ spec:
     env:
       SERVER_NAME: "Hancock Valheim"
       WORLD_NAME: "Hancock"
-      SERVER_PASS: "hancock2026"
+      SERVER_PASS:
+        valueFrom:
+          secretKeyRef:
+            name: valheim-secret
+            key: SERVER_PASS
       SERVER_PUBLIC: "false"
       UPDATE_CRON: "*/15 * * * *"  # Check for updates every 15 minutes
       UPDATE_IF_IDLE: "true"  # Only update when no players connected

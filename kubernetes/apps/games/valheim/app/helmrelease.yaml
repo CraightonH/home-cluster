@@ -73,7 +73,7 @@ spec:
             name: valheim-secret
             key: SERVER_PASS
       SERVER_PUBLIC: "false"
-      UPDATE_CRON: "*/15 * * * *"  # Check for updates every 15 minutes
+      UPDATE_CRON: "0 4 * * *"  # Check for updates once daily at 4 AM
       UPDATE_IF_IDLE: "true"  # Only update when no players connected
       RESTART_CRON: "0 5 * * *"  # Daily restart at 5 AM
       RESTART_IF_IDLE: "true"  # Only restart when no players connected

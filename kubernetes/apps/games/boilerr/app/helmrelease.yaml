@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: boilerr
-      version: 0.0.4
+      version: 0.3.0
       sourceRef:
         kind: HelmRepository
         name: boilerr

@@ -1,6 +1,6 @@
 image:
   repository: teslamate/teslamate
-  tag: 1.29.2
+  tag: 2.2.0
 ingress:
   main:
     enabled: true

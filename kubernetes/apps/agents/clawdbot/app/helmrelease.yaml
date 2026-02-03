@@ -76,6 +76,8 @@ spec:
               - -c
               - |
                 # Clean up stale lock files from previous runs (NAS persistence)
+                # Check both .openclaw and legacy .clawdbot paths
+                find /home/node/.openclaw -name '*.lock' -delete 2>/dev/null || true
                 find /home/node/.clawdbot -name '*.lock' -delete 2>/dev/null || true
                 # Run startup wake in background (triggers heartbeat after channels ready)
                 if [ -x /home/node/clawd/scripts/startup-wake.sh ]; then

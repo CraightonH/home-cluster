@@ -8,6 +8,7 @@ resources:
   - ./cilium.yaml
   - ./coredns.yaml
   - ./dedicated-game-servers.yaml
+  - ./democratic-csi.yaml
   - ./jetstack.yaml
   - ./metrics-server.yaml
   - ./openebs.yaml

@@ -10,6 +10,7 @@ resources:
   - ./dedicated-game-servers.yaml
   - ./democratic-csi.yaml
   - ./jetstack.yaml
+  - ./jsknnr.yaml
   - ./metrics-server.yaml
   - ./openebs.yaml
   - ./postfinance.yaml

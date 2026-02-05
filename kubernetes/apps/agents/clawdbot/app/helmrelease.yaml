@@ -31,7 +31,7 @@ spec:
           clawdbot:
             image:
               repository: craighton/clawdbot-k8s
-              tag: 2026.2.1-k8s
+              tag: 2026.2.3-k8s
             env:
               HOME: /home/node
               TERM: xterm-256color

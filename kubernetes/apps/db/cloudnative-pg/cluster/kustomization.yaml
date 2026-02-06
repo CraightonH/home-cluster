@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   - ./superuser.sops.yaml
   - ./mealie-user.sops.yaml
+  - ./teslamate-user.sops.yaml
   - ./cluster.yaml

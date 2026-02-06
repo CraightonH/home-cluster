@@ -103,7 +103,14 @@ spec:
       driver:
         image: docker.io/democraticcsi/democratic-csi:latest
         imagePullPolicy: IfNotPresent
-      
+        extraEnv:
+          - name: ISCSIADM_HOST_STRATEGY
+            value: nsenter
+          - name: ISCSIADM_HOST_PATH
+            value: /usr/local/sbin/iscsiadm
+        iscsiDirHostPath: /usr/local/etc/iscsi
+        iscsiDirHostPathType: ""
+
       hostPID: true
       
       # Talos Linux requires privileged mode for iSCSI

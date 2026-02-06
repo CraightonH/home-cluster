@@ -61,6 +61,13 @@
       "ignoreTests": true,
       "matchUpdateTypes": ["major", "minor", "patch"]
     },
+    {
+      "description": ["Auto merge patch updates"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchUpdateTypes": ["patch"]
+    },
     // groups
     {
       "description": ["Flux Group"],

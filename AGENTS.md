@@ -178,6 +178,18 @@ task sops:encrypt
 | `kubernetes/flux/vars/cluster-secrets.sops.yaml` | Global secrets (encrypted) |
 | `kubernetes/flux/apps.yaml` | Root Kustomization that loads all apps |
 
+## iSCSI Block Storage Pattern
+
+Apps needing block storage performance (databases, sqlite-heavy) use `synology-iscsi` StorageClass via democratic-csi.
+
+**Pre-staged PV pattern** (survives cluster rebuilds):
+- `volumes/` folder inside app dir contains cleaned PV manifests with `claimRef`
+- Flux Kustomization with `prune: false` deploys PVs (never GC from git removal)
+- App's Flux Kustomization `dependsOn` the volumes Kustomization
+- No `targetNamespace` on volumes Kustomization (PVs are cluster-scoped)
+
+**Reference:** `kubernetes/apps/db/cloudnative-pg/volumes/` and `DEMOCRATIC-CSI-SETUP.md` "Cluster Rebuild Workflow"
+
 ## When Adding Apps
 
 1. Check if HelmRepository exists in `kubernetes/flux/repositories/helm/`

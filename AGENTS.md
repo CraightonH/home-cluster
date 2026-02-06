@@ -2,22 +2,8 @@
 
 This is a Kubernetes homelab cluster managed via GitOps. Changes to this repo automatically sync to the cluster.
 
-## ⚠️ Devcontainer Required
-
-**All cluster tooling lives in the devcontainer.** Commands like `kubectl`, `flux`, `talosctl`, `task`, `sops`, `talhelper`, and `helmfile` are only available inside the container.
-
-```
-.devcontainer/
-├── devcontainer.json    # Uses ghcr.io/onedr0p/cluster-template/devcontainer:base
-└── postCreateCommand.sh # Runs setup on container creation
-```
-
-**To execute cluster commands (Option 1 - Devcontainer):**
-- Open the repo in VS Code and use the devcontainer
-- Or run the container manually with the repo mounted
-
-**To execute cluster commands (Option 2 - Direct Install):**
-Core tools can be installed directly without the container:
+**To execute cluster commands**
+Core tools can be installed directly if they don't exist:
 
 ```bash
 # kubectl
@@ -49,7 +35,7 @@ The Age keys for SOPS encryption are stored in Doppler:
 
 To use: write the private key to `age.key` file or set `SOPS_AGE_KEY` env var directly.
 
-Note: `task` commands still require the devcontainer or a local [task](https://taskfile.dev/) install with Python venv setup.
+Note: `task` commands still require a local [task](https://taskfile.dev/) install with Python venv setup.
 
 ## 📦 bjw-s app-template (Default Chart)
 
@@ -144,8 +130,6 @@ Dependencies between apps are declared in `ks.yaml` via `dependsOn`.
 
 ## Common Tasks (via Taskfile)
 
-These must be run inside the devcontainer:
-
 ```bash
 task --list                    # List all available tasks
 task flux:reconcile            # Force Flux to pull latest changes
@@ -164,8 +148,6 @@ task talos:upgrade node=<n> image=<img>  # Upgrade a Talos node
 
 ## Secrets Workflow
 
-Inside the devcontainer:
-
 ```bash
 # Edit an encrypted secret
 sops kubernetes/path/to/secret.sops.yaml
@@ -179,13 +161,13 @@ task sops:encrypt
 1. **New app:** Copy existing app structure, modify HelmRelease values
 2. **Update app:** Edit `helmrelease.yaml`, bump image tags or chart versions
 3. **Add to namespace:** Update the namespace's `kustomization.yaml` to include the new app
-4. **Commit & push:** Flux auto-reconciles (or run `task flux:reconcile` from devcontainer)
+4. **Commit & push:** Flux auto-reconciles (or run `task flux:reconcile`)
 
 ## Validation
 
 - CI runs `kubeconform` to validate manifests
 - `flux-diff` workflow shows what changes will apply
-- Run locally (in devcontainer): `task kubernetes:kubeconform`
+- Run locally: `task kubernetes:kubeconform`
 
 ## Key Files
 
@@ -195,6 +177,18 @@ task sops:encrypt
 | `kubernetes/flux/vars/cluster-settings.yaml` | Global non-secret cluster settings |
 | `kubernetes/flux/vars/cluster-secrets.sops.yaml` | Global secrets (encrypted) |
 | `kubernetes/flux/apps.yaml` | Root Kustomization that loads all apps |
+
+## iSCSI Block Storage Pattern
+
+Apps needing block storage performance (databases, sqlite-heavy) use `synology-iscsi` StorageClass via democratic-csi.
+
+**Pre-staged PV pattern** (survives cluster rebuilds):
+- `volumes/` folder inside app dir contains cleaned PV manifests with `claimRef`
+- Flux Kustomization with `prune: false` deploys PVs (never GC from git removal)
+- App's Flux Kustomization `dependsOn` the volumes Kustomization
+- No `targetNamespace` on volumes Kustomization (PVs are cluster-scoped)
+
+**Reference:** `kubernetes/apps/db/cloudnative-pg/volumes/` and `DEMOCRATIC-CSI-SETUP.md` "Cluster Rebuild Workflow"
 
 ## When Adding Apps
 

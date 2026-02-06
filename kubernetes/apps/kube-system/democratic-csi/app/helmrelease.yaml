@@ -55,42 +55,25 @@ spec:
           allowInsecure: true
           
         synology:
-          locations:
-            - "/volume12"
-          
+          volume: /volume12
+
         iscsi:
           targetPortal: "${SYNOLOGY_HOST}:3260"
           targetPortals: []
-          # leave empty to allow the driver to use all configured interfaces
           interface: ""
-          
-          # MUST ensure uniqueness
-          # full iqn limit is 223 bytes, plan accordingly
-          # default is "iqn.2000-01.com.synology"
           baseiqn: "iqn.2000-01.com.synology:k8s."
-          
-          # manually define the initiator IQN
-          # will be used for all outgoing connections
-          # leave empty to allow the node to select its own IQN
-          initiatoriqn:
-          
-          # whether or not to use chap auth for discovery
-          # defaults to false
-          discoveryCHAPAuth: false
-          
-          # whether or not to use chap auth for sessions
-          # defaults to false  
-          sessionCHAPAuth: false
-          
-          # set to 1 for LUN per target, 0 for LUN per extent
-          lunTemplate: "{{ .parameters.[csi.storage.k8s.io/pvc/namespace] }}-{{ .parameters.[csi.storage.k8s.io/pvc/name] }}"
-          targetTemplate: "{{ .parameters.[csi.storage.k8s.io/pvc/namespace] }}-{{ .parameters.[csi.storage.k8s.io/pvc/name] }}"
           namePrefix: csi-
           nameSuffix: ""
-          
-          # 1 target per LUN or multiple LUNs per target
-          # default is 1 target per LUN
-          extentCommentTemplate: "{{ .parameters.[csi.storage.k8s.io/pvc/namespace] }}/{{ .parameters.[csi.storage.k8s.io/pvc/name] }}"
+
+          lunTemplate:
+            type: BLUN
+
+          lunSnapshotTemplate:
+            is_locked: true
+
+          targetTemplate:
+            auth_type: 0
+            max_sessions: 0
           
     # Controller deployment
     controller:
@@ -107,7 +90,14 @@ spec:
           repository: docker.io/democraticcsi/democratic-csi
           tag: v1.9.5
           pullPolicy: IfNotPresent
-      
+        extraEnv:
+          - name: ISCSIADM_HOST_STRATEGY
+            value: nsenter
+          - name: ISCSIADM_HOST_PATH
+            value: /usr/local/sbin/iscsiadm
+        iscsiDirHostPath: /usr/local/etc/iscsi
+        iscsiDirHostPathType: ""
+
       hostPID: true
       
       # Talos Linux requires privileged mode for iSCSI

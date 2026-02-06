@@ -56,18 +56,13 @@ Democratic CSI provides dynamic provisioning of Synology iSCSI LUNs as Kubernete
 ### 2. Synology Credentials
 
 Ensure these are set in your cluster secrets (Doppler `home/main`):
-- `SYNOLOGY_HOST` - NAS IP (e.g., 192.168.1.20)
-- `SYNOLOGY_USERNAME` - Admin user (e.g., `clawd`)
+- `SYNOLOGY_HOST` - NAS IP
+- `SYNOLOGY_USERNAME` - Admin user
 - `SYNOLOGY_PASSWORD` - Admin password
 
 ### 3. Kubernetes Cluster Node IPs
 
-Democratic CSI will configure iSCSI initiators on each node. Your Talos nodes:
-- node1: 192.168.1.241
-- node2: 192.168.1.242
-- node3: 192.168.1.243
-- node4: 192.168.1.244
-- node5: 192.168.1.245
+Democratic CSI will configure iSCSI initiators on each node. Node IPs are in cluster secrets.
 
 ## Synology Host Configuration (Access Control)
 
@@ -79,7 +74,7 @@ After democratic-csi starts, check the node IQNs:
 
 ```bash
 # On each node (via talosctl):
-talosctl -n 192.168.1.241 read /etc/iscsi/initiatorname.iscsi --talosconfig kubernetes/bootstrap/talos/clusterconfig/talosconfig
+talosctl -n <node-ip> read /etc/iscsi/initiatorname.iscsi --talosconfig kubernetes/bootstrap/talos/clusterconfig/talosconfig
 
 # Expected format:
 # iqn.2005-03.org.open-iscsi:node1
@@ -188,6 +183,44 @@ Once tested, migrate PostgreSQL from Longhorn to iSCSI:
 4. **Restore data** to new volume
 5. **Verify** database functionality
 6. **Delete old Longhorn PVC**
+
+## Cluster Rebuild Workflow
+
+On cluster rebuild, CNPG creates new PVCs which trigger dynamic provisioning of fresh LUNs — orphaning the existing data on Synology. Pre-staged PV manifests with `claimRef` prevent this by binding to the existing LUN before CNPG provisions anything new.
+
+### How It Works
+
+1. `volumes/postgres-1-pv.yaml` defines a PV pointing at the existing Synology iSCSI LUN
+2. `claimRef` (name + namespace only, no uid) reserves the PV for the expected PVC name
+3. Flux deploys the PV via `cloudnative-pg-volumes` Kustomization **before** the cluster
+4. When CNPG creates the PVC, Kubernetes binds it to the pre-existing PV instead of provisioning a new one
+
+### Re-capture Steps (After PV Changes)
+
+If CNPG creates a new PVC (e.g. scaled instances, changed PVC name), capture the new PV:
+
+```bash
+# 1. Find the PV bound to the CNPG PVC
+kubectl get pvc -n db -l cnpg.io/cluster=postgres -o wide
+
+# 2. Export the PV manifest
+kubectl get pv <pv-name> -o yaml > /tmp/new-pv.yaml
+
+# 3. Clean dynamic fields: remove uid, resourceVersion, creationTimestamp,
+#    managedFields, status, finalizers. Strip uid from claimRef (keep name + namespace).
+
+# 4. Save to kubernetes/apps/db/cloudnative-pg/volumes/<name>-pv.yaml
+
+# 5. Add to volumes/kustomization.yaml resources list
+
+# 6. Commit and push
+```
+
+### Important Notes
+
+- `prune: false` on the Flux Kustomization ensures removing the PV from git never deletes it from the cluster
+- The `persistentVolumeReclaimPolicy: Retain` on the PV prevents data loss if the PVC is deleted
+- On a running cluster with the PVC already bound, deploying this PV manifest is a no-op (the existing dynamic PV takes precedence)
 
 ## Troubleshooting
 

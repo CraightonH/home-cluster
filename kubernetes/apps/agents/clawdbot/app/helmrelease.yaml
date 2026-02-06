@@ -27,11 +27,21 @@ spec:
       clawdbot:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/arch
+                        operator: In
+                        values:
+                          - amd64
         containers:
           clawdbot:
             image:
               repository: craighton/clawdbot-k8s
-              tag: 2026.2.1-k8s
+              tag: 2026.2.3-k8s
             env:
               HOME: /home/node
               TERM: xterm-256color

@@ -58,6 +58,11 @@ spec:
       DATABASE_PORT: "5432"
       DATABASE_NAME: teslamate
       DATABASE_USER: teslamate
+      DATABASE_PASS:
+        valueFrom:
+          secretKeyRef:
+            name: teslamate-secrets
+            key: DATABASE_PASS
     envFrom:
       - secretRef:
           name: teslamate-secrets

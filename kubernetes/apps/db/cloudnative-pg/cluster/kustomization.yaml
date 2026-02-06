@@ -5,4 +5,6 @@ kind: Kustomization
 resources:
   - ./superuser.sops.yaml
   - ./mealie-user.sops.yaml
+  - ./homeassistant-user.sops.yaml
+  - ./homeassistant-db.yaml
   - ./cluster.yaml

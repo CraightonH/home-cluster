@@ -95,14 +95,18 @@ spec:
     # Controller deployment
     controller:
       driver:
-        image: docker.io/democraticcsi/democratic-csi:latest
-        imagePullPolicy: IfNotPresent
+        image:
+          repository: docker.io/democraticcsi/democratic-csi
+          tag: v1.9.5
+          pullPolicy: IfNotPresent
       
     # Node daemonset
     node:
       driver:
-        image: docker.io/democraticcsi/democratic-csi:latest
-        imagePullPolicy: IfNotPresent
+        image:
+          repository: docker.io/democraticcsi/democratic-csi
+          tag: v1.9.5
+          pullPolicy: IfNotPresent
       
       hostPID: true
       

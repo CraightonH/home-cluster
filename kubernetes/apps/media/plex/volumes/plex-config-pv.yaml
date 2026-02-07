@@ -18,7 +18,7 @@ spec:
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: plex-config-v2
+    name: plex-config
     namespace: media
   csi:
     controllerExpandSecretRef:

@@ -104,7 +104,9 @@ spec:
       config:
         enabled: true
         type: persistentVolumeClaim
-        existingClaim: plex-config-v2
+        storageClass: synology-iscsi
+        size: 20Gi
+        accessMode: ReadWriteOnce
         advancedMounts:
           main:
             main:

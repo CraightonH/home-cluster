@@ -13,7 +13,7 @@ spec:
   prune: true
   dependsOn:
     - name: ingress-nginx-external
-    - name: longhorn
+    - name: plex-volumes
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -21,3 +21,23 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 15m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app plex-volumes
+  namespace: flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/media/plex/volumes
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  timeout: 5m
+  dependsOn:
+    - name: democratic-csi-iscsi

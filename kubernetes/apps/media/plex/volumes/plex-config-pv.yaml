@@ -1,0 +1,50 @@
+---
+# Pre-staged PV for Plex config. Binds to existing Synology iSCSI LUN
+# so cluster rebuilds reuse data instead of provisioning a new LUN.
+# Re-capture steps: see DEMOCRATIC-CSI-SETUP.md "Cluster Rebuild Workflow"
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-5b71d45d-f975-4d0b-bd2d-e9b908bbf121
+  annotations:
+    pv.kubernetes.io/provisioned-by: org.democratic-csi.iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-name: provisioner-secret-synology-iscsi-democratic-csi-iscsi
+    volume.kubernetes.io/provisioner-deletion-secret-namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 20Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: plex-config-v2
+    namespace: media
+  csi:
+    controllerExpandSecretRef:
+      name: controller-expand-secret-synology-iscsi-democratic-csi-iscsi
+      namespace: kube-system
+    controllerPublishSecretRef:
+      name: controller-publish-secret-synology-iscsi-democratic-csi-iscsi
+      namespace: kube-system
+    driver: org.democratic-csi.iscsi
+    fsType: ext4
+    nodePublishSecretRef:
+      name: node-publish-secret-synology-iscsi-democratic-csi-iscsi
+      namespace: kube-system
+    nodeStageSecretRef:
+      name: node-stage-secret-synology-iscsi-democratic-csi-iscsi
+      namespace: kube-system
+    volumeAttributes:
+      interface: ""
+      iqn: iqn.2000-01.com.synology:k8s.csi-pvc-5b71d45d-f975-4d0b-bd2d-e9b908bbf121
+      lun: "1"
+      node_attach_driver: iscsi
+      portal: ${SYNOLOGY_HOST}:3260
+      portals: ""
+      provisioner_driver: synology-iscsi
+      storage.kubernetes.io/csiProvisionerIdentity: 1770421974888-1794-org.democratic-csi.iscsi
+    volumeHandle: pvc-5b71d45d-f975-4d0b-bd2d-e9b908bbf121
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: synology-iscsi
+  volumeMode: Filesystem

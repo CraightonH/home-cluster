@@ -61,7 +61,7 @@ spec:
           codeserver:
             image:
               repository: codercom/code-server
-              tag: 4.90.3
+              tag: 4.108.2
             env:
               TZ: America/Denver
             workingDir: /config

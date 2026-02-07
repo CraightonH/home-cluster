@@ -60,6 +60,8 @@ spec:
               - /data
               - '--download-dir'
               - /data
+              - '--stt-library'
+              - faster-whisper
               - '--model'
               - tiny-int8
               - '--language'

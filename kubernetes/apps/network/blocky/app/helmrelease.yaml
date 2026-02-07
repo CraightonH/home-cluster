@@ -71,7 +71,6 @@ spec:
       customDNS:
         mapping:
           hubble.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          longhorn.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           frigate.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           k8s.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}

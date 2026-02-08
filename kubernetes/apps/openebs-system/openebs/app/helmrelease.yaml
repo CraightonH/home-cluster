@@ -43,3 +43,11 @@ spec:
         name: openebs-hostpath
         isDefaultClass: false
         basePath: /var/openebs/local
+    # Disable observability components (Loki, Minio, Alloy)
+    # These were added in 4.4.0 but fail with hostpath volume mounting
+    loki:
+      enabled: false
+    minio:
+      enabled: false
+    alloy:
+      enabled: false

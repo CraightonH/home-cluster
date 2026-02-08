@@ -44,6 +44,12 @@
       "versioning": "loose",
       "matchPackagePatterns": ["changedetection", "plex"]
     },
+    {
+      "description": ["Disable automerge for Plex (architecture suffix conflicts)"],
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["plex"],
+      "automerge": false
+    },
     // automerge
     {
       "description": ["Auto merge Github Actions"],

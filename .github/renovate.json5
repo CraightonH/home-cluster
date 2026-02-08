@@ -44,12 +44,6 @@
       "versioning": "loose",
       "matchPackagePatterns": ["changedetection", "plex"]
     },
-    {
-      "description": ["Disable automerge for Plex (architecture suffix conflicts)"],
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["plexinc/pms-docker"],
-      "automerge": false
-    },
     // automerge
     {
       "description": ["Auto merge Github Actions"],
@@ -73,6 +67,13 @@
       "automergeType": "branch",
       "ignoreTests": true,
       "matchUpdateTypes": ["patch"]
+    },
+    {
+      "description": ["Plex: reject architecture-suffixed tags, disable automerge"],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["plexinc/pms-docker"],
+      "allowedVersions": "!/-armhf$/",
+      "automerge": false
     },
     // groups
     {

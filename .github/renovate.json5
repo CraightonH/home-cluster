@@ -47,7 +47,7 @@
     {
       "description": ["Disable automerge for Plex (architecture suffix conflicts)"],
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["plex"],
+      "matchPackageNames": ["plexinc/pms-docker"],
       "automerge": false
     },
     // automerge

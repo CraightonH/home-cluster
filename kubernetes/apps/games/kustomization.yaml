@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./boilerr/ks.yaml
+  - ./enshrouded/ks.yaml
   - ./factorio/ks.yaml
   - ./valheim/ks.yaml
   - ./web-games/ks.yaml

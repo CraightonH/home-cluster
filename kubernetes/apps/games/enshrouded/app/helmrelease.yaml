@@ -68,7 +68,3 @@ spec:
       steamPort: 27015
       serverSlots: 16
       externalConfig: 0
-    
-    # Optional: Pin to specific node if needed
-    nodeSelector: {}
-    tolerations: []

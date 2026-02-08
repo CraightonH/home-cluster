@@ -72,7 +72,7 @@
       "description": ["Plex: reject architecture-suffixed tags, disable automerge"],
       "matchDatasources": ["docker"],
       "matchPackageNames": ["plexinc/pms-docker"],
-      "allowedVersions": "!/-armhf$/",
+      "allowedVersions": "!/-(armhf|arm64|aarch64)$/",
       "automerge": false
     },
     // groups

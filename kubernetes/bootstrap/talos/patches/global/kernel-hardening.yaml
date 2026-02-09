@@ -1,4 +1,0 @@
-machine:
-  install:
-    extraKernelArgs:
-      - init_on_alloc=0

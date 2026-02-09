@@ -28,6 +28,7 @@ spec:
       retries: 3
   values:
     replicas: 1
+    features: "continuous-delivery=false&harvester=false&multi-cluster-management=false&rke2=false"
     hostname: rancher.${SECRET_DOMAIN}
     ingress:
       enabled: true

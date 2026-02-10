@@ -26,4 +26,5 @@ resources:
   - ./opea.yaml
   - ./otwld.yaml
   - ./external-secrets.yaml
+  - ./headlamp.yaml
   - ./valheim-k8s.yaml

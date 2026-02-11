@@ -74,7 +74,7 @@ spec:
           frigate.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           k8s.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          games.${SECRET_DOMAIN}: 205.197.216.36
+          games.${SECRET_DOMAIN}: ${GAME_SERVER_IP}
           nas.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS}
       blocking:
@@ -120,6 +120,14 @@ spec:
     podAnnotations:
       configmap.reloader.stakater.com/reload: "blocky-config"
     affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/arch
+                  operator: In
+                  values:
+                    - amd64
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100

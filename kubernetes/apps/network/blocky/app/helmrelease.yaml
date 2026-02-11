@@ -74,7 +74,7 @@ spec:
           frigate.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           k8s.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          games.${SECRET_DOMAIN}: 205.197.216.36
+          games.${SECRET_DOMAIN}: 192.168.1.241
           nas.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS}
       blocking:

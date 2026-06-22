@@ -29,7 +29,7 @@ spec:
     # Factorio Docker image (rootless variant avoids NFS permission issues)
     image:
       repository: factoriotools/factorio
-      tag: "2.0.76-rootless"
+      tag: "2.0.77-rootless"
       pullPolicy: IfNotPresent
 
     # Resource allocation

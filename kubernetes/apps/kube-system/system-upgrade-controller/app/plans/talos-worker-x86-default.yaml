@@ -10,10 +10,6 @@ spec:
   version: v1.12.9
   serviceAccountName: system-upgrade
   concurrency: 1
-  prepare:
-    image: factory.talos.dev/installer/48369893e1b56c3e2c53575db56df55a90e260135591a0456b128e3459151c7a
-    args:
-      - --dry-run
   nodeSelector:
     matchExpressions:
       - key: node-role.kubernetes.io/control-plane

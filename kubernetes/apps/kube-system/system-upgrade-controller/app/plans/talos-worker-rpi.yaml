@@ -1,0 +1,22 @@
+---
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+# Upgrades RPi worker nodes (node4, node5 — schematic f8a903f1).
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: talos-worker-rpi
+  namespace: system-upgrade
+spec:
+  version: v1.12.9
+  serviceAccountName: system-upgrade
+  concurrency: 1
+  nodeSelector:
+    matchExpressions:
+      - key: node-role.kubernetes.io/control-plane
+        operator: DoesNotExist
+      - key: talos.dev/schematic-group
+        operator: In
+        values:
+          - rpi
+  upgrade:
+    image: factory.talos.dev/installer/f8a903f101ce10f686476024898734bb6b36353cc4d41f348514db9004ec0a9d

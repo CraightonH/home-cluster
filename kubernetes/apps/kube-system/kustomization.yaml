@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./talos-node-rbac.yaml
+  - ./system-upgrade-controller/ks.yaml
   - ./cilium/ks.yaml
   - ./coredns/ks.yaml
   - ./democratic-csi/ks.yaml

@@ -1,0 +1,20 @@
+---
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+# Upgrades control-plane nodes (node1 — schematic 48369893, x86-default).
+# exclusive: true ensures no other Plans run concurrently.
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: talos-controlplane
+  namespace: system-upgrade
+spec:
+  version: v1.12.9
+  exclusive: true
+  serviceAccountName: system-upgrade
+  concurrency: 1
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/control-plane: ""
+      talos.dev/schematic-group: x86-default
+  upgrade:
+    image: factory.talos.dev/installer/48369893e1b56c3e2c53575db56df55a90e260135591a0456b128e3459151c7a

@@ -1,0 +1,26 @@
+---
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+# Upgrades worker nodes on x86-default hardware (node2, node3 — schematic 48369893).
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: talos-worker-x86-default
+  namespace: system-upgrade
+spec:
+  version: v1.12.9
+  serviceAccountName: system-upgrade
+  concurrency: 1
+  prepare:
+    image: factory.talos.dev/installer/48369893e1b56c3e2c53575db56df55a90e260135591a0456b128e3459151c7a
+    args:
+      - --dry-run
+  nodeSelector:
+    matchExpressions:
+      - key: node-role.kubernetes.io/control-plane
+        operator: DoesNotExist
+      - key: talos.dev/schematic-group
+        operator: In
+        values:
+          - x86-default
+  upgrade:
+    image: factory.talos.dev/installer/48369893e1b56c3e2c53575db56df55a90e260135591a0456b128e3459151c7a

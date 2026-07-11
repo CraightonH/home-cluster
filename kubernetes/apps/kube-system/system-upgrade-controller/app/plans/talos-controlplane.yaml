@@ -27,7 +27,7 @@ spec:
       - upgrade
       - --nodes
       - 127.0.0.1
-      - --endpoint
+      - --endpoints
       - 127.0.0.1
       - --talosconfig
       - /etc/talos/talosconfig

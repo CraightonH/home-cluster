@@ -18,5 +18,21 @@ spec:
         operator: In
         values:
           - x86-new
+  secrets:
+    - name: talos-upgrade-config
+      path: /etc/talos
   upgrade:
-    image: factory.talos.dev/installer/3a33ec6dfc8cfd61d2a3db3caf97894f31e913952d71ce3c3fbbe565a3f08339
+    image: ghcr.io/siderolabs/talosctl:v1.12.9
+    command:
+      - talosctl
+    args:
+      - upgrade
+      - --nodes
+      - 127.0.0.1
+      - --endpoint
+      - 127.0.0.1
+      - --talosconfig
+      - /etc/talos/talosconfig
+      - --image
+      - factory.talos.dev/installer/3a33ec6dfc8cfd61d2a3db3caf97894f31e913952d71ce3c3fbbe565a3f08339:v1.12.9
+      - --wait=false

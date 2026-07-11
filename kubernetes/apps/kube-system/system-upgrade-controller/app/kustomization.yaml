@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./crd.yaml
   - ./controller.yaml
+  - ./talosconfig.sops.yaml
   - ./plans/talos-controlplane.yaml
   - ./plans/talos-worker-x86-default.yaml
   - ./plans/talos-worker-rpi.yaml

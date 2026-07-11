@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: talos-upgrade-config
+    namespace: system-upgrade
+stringData:
+    talosconfig: ENC[AES256_GCM,data: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,iv:lHMogy+xHWFRzMoL4dZkEQ2Uzw1XA8alkcQO0Eu4KjY=,tag:NhAN/xuZmlvIGqPmG4E2eg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age16ruxdp45mj6tc80n6fu3x5xvqccl963ms8qln8sah6plxyvcj47st7u2yf
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBaYTFDaEx5THlPK1FtOXhM
+            blNDSzZ3NDJMS0RaZnpVNGluZUg2d3JvcVZrCndOODRqRmZEYTN3clJiSzRTYW9L
+            S2NtcFJIYVlYZlhFQ1VCd2VhQUg4UzgKLS0tIC84ZlVrZWQzVHRLYU94a1BnYUpE
+            QmVVbkE0VU9zNE8rYzZQZjEyclV3amMKzqfHpFAqEcyoMV8nqDsHuxu/1O+YXFe0
+            gA0gK0jdVDYl3jOeh6m4zSfKG6LG98w57acjDZ3IzD7ItqZJjuPKtw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-07-11T20:52:37Z"
+    mac: ENC[AES256_GCM,data:DFtQPSEFc7097Ht38eEcFbQa/eULUNLsHxTK6cr7M6HS0pAUuIo68DxGpdMNA3Rs+vxMezO2shFKJfVrKvRbTn2RcLUEBb4DPAwckS4RMlcplI+6W5y72EIs/vjDXhBc/VH/P2Nr0ysVQqemFtpJbkcUxQrpAugFFXJZJdINqHU=,iv:vd1zrjqvCfd4Uuo/cvhgVKYgXLyw5hZeTGac2q0KA9s=,tag:zbRZHcda45ETv2tfMr1saQ==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.8.1

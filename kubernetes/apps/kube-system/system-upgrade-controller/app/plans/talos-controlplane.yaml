@@ -23,7 +23,7 @@ spec:
     image: ghcr.io/siderolabs/talosctl:v1.12.9
     command:
       - /talosctl
-    env:
+    envs:
       - name: NODE_IP
         valueFrom:
           fieldRef:

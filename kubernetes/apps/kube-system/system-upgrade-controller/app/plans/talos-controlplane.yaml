@@ -22,7 +22,7 @@ spec:
   upgrade:
     image: ghcr.io/siderolabs/talosctl:v1.12.9
     command:
-      - talosctl
+      - /talosctl
     args:
       - upgrade
       - --nodes

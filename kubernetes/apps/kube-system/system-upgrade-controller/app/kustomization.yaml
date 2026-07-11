@@ -6,6 +6,7 @@ resources:
   - ./controller.yaml
   - ./talosconfig.sops.yaml
   - ./plans/talos-controlplane.yaml
+  - ./plans/talos-controlplane-rpi.yaml
   - ./plans/talos-worker-x86-default.yaml
   - ./plans/talos-worker-rpi.yaml
   - ./plans/talos-worker-x86-new.yaml

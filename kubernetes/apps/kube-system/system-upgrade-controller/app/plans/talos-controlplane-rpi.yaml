@@ -1,0 +1,41 @@
+---
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+# Upgrades RPi control-plane nodes (node4 — schematic f8a903f1).
+# exclusive: true ensures no other Plans run concurrently.
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: talos-controlplane-rpi
+  namespace: system-upgrade
+spec:
+  version: v1.12.9
+  exclusive: true
+  serviceAccountName: system-upgrade
+  concurrency: 1
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/control-plane: ""
+      talos.dev/schematic-group: rpi
+  secrets:
+    - name: talos-upgrade-config
+      path: /etc/talos
+  upgrade:
+    image: ghcr.io/siderolabs/talosctl:v1.12.9
+    command:
+      - /talosctl
+    envs:
+      - name: NODE_IP
+        valueFrom:
+          fieldRef:
+            fieldPath: status.hostIP
+    args:
+      - upgrade
+      - --nodes
+      - $(NODE_IP)
+      - --endpoints
+      - $(NODE_IP)
+      - --talosconfig
+      - /etc/talos/talosconfig
+      - --image
+      - factory.talos.dev/installer/f8a903f101ce10f686476024898734bb6b36353cc4d41f348514db9004ec0a9d:v1.12.9
+      - --wait=false

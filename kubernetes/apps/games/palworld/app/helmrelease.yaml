@@ -1,0 +1,105 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: palworld
+  namespace: games
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+    timeout: 20m  # Allow time for initial SteamCMD download
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+    timeout: 20m
+  values:
+    defaultPodOptions:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node1 # Palworld can use up to ~16GB RAM
+
+    global:
+      fullnameOverride: palworld
+
+    controllers:
+      palworld:
+        type: statefulset
+        replicas: 1
+        containers:
+          palworld:
+            image:
+              # Matches the korax-dev reference chart's image
+              repository: jammsen/palworld-dedicated-server
+              tag: latest
+              pullPolicy: Always
+            # Secrets (SERVER_PASSWORD, ADMIN_PASSWORD) come from the
+            # SOPS-encrypted palworld-secret - never inlined in values
+            envFrom:
+              - secretRef:
+                  name: palworld-secret
+            env:
+              TZ: America/Denver
+              # jammsen image errors on PUID/PGID 0 - must run as non-root
+              PUID: "1000"
+              PGID: "1000"
+              SERVER_DESCRIPTION: ""
+              MAX_PLAYERS: "16"
+              PUBLIC_PORT: "8211"
+              MULTITHREAD_ENABLED: "true"
+              COMMUNITY_SERVER: "false"
+              ALWAYS_UPDATE_ON_START: "true"
+              RCON_ENABLED: "false"
+              RESTAPI_ENABLED: "true"
+              # Rolling backups managed by the container
+              BACKUP_ENABLED: "true"
+              BACKUP_CRON_EXPRESSION: "0 * * * *"
+              BACKUP_RETENTION_POLICY: "true"
+              BACKUP_RETENTION_AMOUNT_TO_KEEP: "168"
+            resources:
+              requests:
+                memory: 8Gi
+                cpu: 1000m
+              limits:
+                memory: 16Gi
+
+    service:
+      palworld:
+        controller: palworld
+        type: NodePort
+        ports:
+          game:
+            port: 8211
+            nodePort: 30211
+            protocol: UDP
+
+    persistence:
+      config:
+        type: persistentVolumeClaim
+        storageClass: nfs-client
+        accessMode: ReadWriteOnce
+        size: 50Gi
+        retain: true
+        advancedMounts:
+          palworld:
+            palworld:
+              - path: /palworld
+
+    serviceAccount:
+      create: false

@@ -9,4 +9,5 @@ resources:
   - ./valheim/ks.yaml
   - ./web-games/ks.yaml
   - ./satisfactory/ks.yaml
+  - ./palworld/ks.yaml
   # - ./icarus/ks.yaml

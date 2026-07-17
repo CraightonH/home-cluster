@@ -20,7 +20,7 @@ spec:
     - name: talos-upgrade-config
       path: /etc/talos
   upgrade:
-    image: ghcr.io/siderolabs/talosctl:v1.12.9
+    image: ghcr.io/siderolabs/talosctl:v1.12.10
     command:
       - /talosctl
     envs:

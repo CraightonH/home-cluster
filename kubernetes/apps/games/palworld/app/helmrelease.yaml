@@ -33,7 +33,11 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
-                      - node1 # Palworld can use up to ~16GB RAM
+                      # Palworld's world sim is a single UE game thread; server
+                      # FPS is bound by single-thread CPU speed, not core count.
+                      # node6 = i7-7700 (2017, best single-thread in cluster) +
+                      # 16GB RAM + idle. Beats node1's 2013 Xeon E5-1620 v2.
+                      - node6
 
     global:
       fullnameOverride: palworld

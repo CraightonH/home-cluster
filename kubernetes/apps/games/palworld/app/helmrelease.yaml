@@ -71,7 +71,7 @@ spec:
               PUBLIC_PORT: "8211"
               MULTITHREAD_ENABLED: "true"
               COMMUNITY_SERVER: "false"
-              ALWAYS_UPDATE_ON_START: "false"
+              ALWAYS_UPDATE_ON_START: "true"
               RCON_ENABLED: "false"
               RESTAPI_ENABLED: "true"
               # Rolling backups managed by the container

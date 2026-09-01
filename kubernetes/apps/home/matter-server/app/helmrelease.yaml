@@ -1,0 +1,101 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app matter-server
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    # Matter commissioning needs host mDNS + IPv6 to reach devices on the LAN,
+    # so a ClusterIP alone is not enough. Home Assistant still connects in-cluster
+    # over the WebSocket at ws://matter-server.home.svc.cluster.local:5580/ws.
+    defaultPodOptions:
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+
+    global:
+      fullnameOverride: *app
+
+    controllers:
+      matter-server:
+        # RWO volume, single writer — never run two pods against the same fabric data.
+        strategy: Recreate
+        containers:
+          matter-server:
+            image:
+              repository: ghcr.io/matter-js/matterjs-server
+              tag: "1.4.0"
+            args:
+              - --storage-path=/data
+            env:
+              TZ: America/Denver
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 5580
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+              readiness: *probes
+
+    service:
+      main:
+        controller: *app
+        nameOverride: *app
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        nameOverride: *app
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: "matter.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+        tls:
+          - hosts:
+              - "matter.${SECRET_DOMAIN}"
+            secretName: matter-server-tls
+
+    persistence:
+      data:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: nfs-client
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        retain: true
+        advancedMounts:
+          matter-server:
+            matter-server:
+              - path: /data
+
+    serviceAccount:
+      create: false

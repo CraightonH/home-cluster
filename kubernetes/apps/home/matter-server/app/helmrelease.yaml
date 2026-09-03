@@ -43,10 +43,6 @@ spec:
               tag: "1.4.0"
             args:
               - --storage-path=/data
-              # Matic robot vacuum ships with a Matter test PAA (vendor 0xFFF1), so the
-              # production-only trust policy rejects its attestation. This also trusts
-              # test-net certs from any vendor; only pair devices you trust.
-              - --enable-test-net-dcl
             env:
               TZ: America/Denver
             probes:

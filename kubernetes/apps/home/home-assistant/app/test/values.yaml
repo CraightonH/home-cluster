@@ -15,7 +15,7 @@ controllers:
       home-assistant:
         image:
           repository: ghcr.io/home-assistant/home-assistant
-          tag: 2026.9.0
+          tag: 2026.9.1
         env:
           TZ: America/Denver
         probes:

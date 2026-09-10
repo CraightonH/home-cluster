@@ -2,6 +2,12 @@
 spegel:
   containerdSock: /run/containerd/containerd.sock
   containerdRegistryConfigPath: /etc/cri/conf.d/hosts
+  # Mixed-arch cluster (node4/node5 are arm64, rest amd64): Spegel tag
+  # resolution can hand an amd64 node the arm64 manifest for a tag, which
+  # caches a wrong-arch image and crash-loops the workload with
+  # "exec format error". Resolve tags upstream; blobs are still mirrored
+  # by digest, which is arch-unambiguous.
+  resolveTags: false
 service:
   registry:
     hostPort: 29999

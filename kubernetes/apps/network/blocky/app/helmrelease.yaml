@@ -42,8 +42,8 @@ spec:
       dns:
         enabled: true
         type: LoadBalancer
-        externalIPs:
-          - "${SECRET_BLOCKY_ADDRESS}"
+        annotations:
+          io.cilium/lb-ipam-ips: "${SECRET_BLOCKY_ADDRESS}"
         ports:
           tcp:
             enabled: true

@@ -22,12 +22,23 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  # The deployment was hand-scaled to 0 while shut down. Helm's three-way merge
+  # leaves an unchanged replicas field alone, so drift detection is what puts it back to 1.
+  driftDetection:
+    mode: enabled
   values:
     controllers:
       clawdbot:
+        replicas: 1
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -37,43 +48,88 @@ spec:
                         operator: In
                         values:
                           - amd64
+        initContainers:
+          seed-home:
+            # Same image as the app so jq is available. Runs as root to chown.
+            image:
+              repository: craighton/clawdbot-k8s
+              tag: 2026.9.4-k8s
+            securityContext:
+              runAsUser: 0
+            command:
+              - sh
+              - -c
+              - |
+                set -eu
+                # First boot only: carry the old config and dotfiles from the NFS home
+                # onto the new block-storage home. Marker file makes this idempotent.
+                if [ ! -f /home/node/.seeded ]; then
+                  mkdir -p /home/node/.openclaw
+                  # Strip the Anthropic auth profile, the sonnet model pin and allowlist,
+                  # and contextPruning (unconfirmed in the 2026.9 strict schema).
+                  jq 'del(.auth, .agents.defaults.model, .agents.defaults.models, .agents.defaults.contextPruning)' \
+                    /oldhome/.openclaw/openclaw.json > /home/node/.openclaw/openclaw.json
+                  [ -d /oldhome/.openclaw/credentials ] && cp -a /oldhome/.openclaw/credentials /home/node/.openclaw/
+                  for d in .talos .doppler .config/sops; do
+                    if [ -d "/oldhome/$d" ]; then mkdir -p "/home/node/$(dirname $d)"; cp -a "/oldhome/$d" "/home/node/$d"; fi
+                  done
+                  [ -f /oldhome/.gitconfig ] && cp -a /oldhome/.gitconfig /home/node/.gitconfig
+                  # The workspace checkout on NFS was written as root; the gateway now runs as 1000.
+                  chown -R 1000:1000 /oldhome/clawd
+                  date -u +%FT%TZ > /home/node/.seeded
+                fi
+                chown -R 1000:1000 /home/node
         containers:
           clawdbot:
             image:
               repository: craighton/clawdbot-k8s
-              tag: 2026.3.22-k8s
+              tag: 2026.9.4-k8s
             env:
               HOME: /home/node
               TERM: xterm-256color
               TZ: America/Denver
-              CLAWDBOT_GATEWAY_BIND: lan
-              CLAWDBOT_GATEWAY_PORT: "18789"
-              CLAWDBOT_ALLOW_MULTI_GATEWAY: "1"
+              OPENCLAW_STATE_DIR: /home/node/.openclaw
+              OPENCLAW_GATEWAY_PORT: "18789"
             envFrom:
               - secretRef:
                   name: clawdbot-secret
+            command:
+              - node
+              - dist/index.js
+              - gateway
+              - --bind
+              - lan
+              - --port
+              - "18789"
             probes:
-              liveness:
+              startup:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /startupz
                     port: &port 18789
-                  initialDelaySeconds: 30
-                  periodSeconds: 30
-                  timeoutSeconds: 10
-                  failureThreshold: 3
+                  periodSeconds: 10
+                  failureThreshold: 30
               readiness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /startupz
                     port: *port
-                  initialDelaySeconds: 50
                   periodSeconds: 10
                   timeoutSeconds: 5
+                  failureThreshold: 3
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 10
                   failureThreshold: 3
             resources:
               requests:
@@ -81,19 +137,6 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 2Gi
-            command:
-              - /bin/sh
-              - -c
-              - |
-                # Clean up stale lock files from previous runs (NAS persistence)
-                # Check both .openclaw and legacy .clawdbot paths
-                find /home/node/.openclaw -name '*.lock' -delete 2>/dev/null || true
-                find /home/node/.clawdbot -name '*.lock' -delete 2>/dev/null || true
-                # Run startup wake in background (triggers heartbeat after channels ready)
-                if [ -x /home/node/clawd/scripts/startup-wake.sh ]; then
-                  /home/node/clawd/scripts/startup-wake.sh &
-                fi
-                exec node dist/index.js gateway --port 18789 --bind lan
 
     service:
       clawdbot:
@@ -121,15 +164,31 @@ spec:
             secretName: clawd-tls
 
     persistence:
-      # Note: config PVC (clawdbot-config) is no longer needed
-      # .clawdbot data has been migrated into the workspace PVC
-      # The old PVC can be deleted after confirming stability
-      workspace:
+      # Whole home on block storage: OpenClaw's SQLite state and hard-link locks
+      # are not safe on NFS (openclaw/openclaw#81089).
+      home:
         enabled: true
         type: persistentVolumeClaim
-        storageClass: nfs-client
+        storageClass: synology-iscsi
         accessMode: ReadWriteOnce
         size: 10Gi
         retain: true
-        globalMounts:
-          - path: /home/node
+        advancedMounts:
+          clawdbot:
+            seed-home:
+              - path: /home/node
+            clawdbot:
+              - path: /home/node
+      # Existing NFS volume. Kept intact as rollback; only clawd/ is exposed to
+      # the gateway, which hides the stale .openclaw state next to it.
+      oldhome:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: clawdbot-workspace
+        advancedMounts:
+          clawdbot:
+            seed-home:
+              - path: /oldhome
+            clawdbot:
+              - path: /home/node/clawd
+                subPath: clawd

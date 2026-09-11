@@ -5,5 +5,3 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-  # SOPS secret replaced by ExternalSecret (Doppler)
-  # - ./secret.sops.yaml

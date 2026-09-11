@@ -69,15 +69,14 @@ spec:
         groups:
           default:
             - ${SECRET_DEFAULT_GATEWAY}
+      # customDNS matches subdomains too; keep only what k8s-gateway can't answer
       customDNS:
         mapping:
-          hubble.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          frigate.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          esphome.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          k8s.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
           games.${SECRET_DOMAIN}: ${GAME_SERVER_IP}
-          nas.${SECRET_DOMAIN}: ${SECRET_INTERNAL_INGRESS}
-          ${SECRET_DOMAIN}: ${SECRET_EXTERNAL_INGRESS}
+      # k8s-gateway answers ingress/service hosts with the correct internal/external ingress IP
+      conditional:
+        mapping:
+          ${SECRET_DOMAIN}: 192.168.1.153
       blocking:
         denylists:
           ads:

@@ -55,7 +55,8 @@ spec:
             port: 53
             protocol: UDP
             targetPort: 53
-        externalTrafficPolicy: Local
+        # Cluster: Cilium L2 may elect a node without a blocky pod; Local would drop traffic there
+        externalTrafficPolicy: Cluster
     metrics:
       enabled: false
       serviceMonitor:

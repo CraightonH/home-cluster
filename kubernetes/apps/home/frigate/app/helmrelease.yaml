@@ -44,7 +44,7 @@ spec:
           main:
             image:
               repository: ghcr.io/blakeblackshear/frigate
-              tag: 0.16.4
+              tag: 0.18.0
             env:
               TZ: America/Denver
 

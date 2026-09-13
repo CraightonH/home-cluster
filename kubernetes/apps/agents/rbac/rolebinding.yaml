@@ -1,0 +1,14 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: clawdbot-prototype-web-app-role-binding
+  namespace: agents
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: agents
+roleRef:
+  kind: Role
+  name: clawdbot-prototype-web-app-role
+  apiGroup: rbac.authorization.k8s.io

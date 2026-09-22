@@ -1,0 +1,161 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app wyze-bridge
+  namespace: home
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    global:
+      fullnameOverride: *app
+
+    defaultPodOptions:
+      # Keep the pod isolated from the host network and do not expose an SA token.
+      automountServiceAccountToken: false
+      annotations:
+        reloader.stakater.com/auto: "true"
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+
+    controllers:
+      main:
+        # Authentication gate: leave dormant until wyze-bridge-secret is provisioned from Doppler.
+        replicas: 0
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: mrlt8/wyze-bridge
+              tag: "2.10.3"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              # The upstream image starts as root and may write transient runtime files.
+              readOnlyRootFilesystem: false
+            env:
+              TZ: America/Denver
+              WB_AUTH: "true"
+              ON_DEMAND: "true"
+              MQTT_HOST: mqtt
+              MQTT_DTOPIC: homeassistant
+              MQTT_TOPIC: wyzebridge
+              RECORD_ALL: "false"
+              WYZE_EMAIL:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: WYZE_EMAIL
+              WYZE_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: WYZE_PASSWORD
+              API_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: API_ID
+              API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: API_KEY
+              WB_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: WB_USERNAME
+              WB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: WB_PASSWORD
+              STREAM_AUTH:
+                valueFrom:
+                  secretKeyRef:
+                    name: wyze-bridge-secret
+                    key: STREAM_AUTH
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &web-port 5000
+                  initialDelaySeconds: 15
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 30
+              readiness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *web-port
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+              liveness: *probes
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 1
+                memory: 1Gi
+
+    service:
+      main:
+        controller: main
+        type: ClusterIP
+        nameOverride: *app
+        ports:
+          http:
+            primary: true
+            port: *web-port
+            protocol: HTTP
+          rtsp:
+            port: 8554
+            protocol: TCP
+
+    persistence:
+      tokens:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: nfs-client
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        retain: true
+        advancedMounts:
+          main:
+            main:
+              - path: /tokens
+      img:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          main:
+            main:
+              - path: /img
+
+    serviceAccount:
+      create: false

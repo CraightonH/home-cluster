@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: k8s-gateway
-      version: 2.4.0
+      version: 3.7.3
       sourceRef:
         kind: HelmRepository
         name: k8s-gateway
@@ -22,6 +22,10 @@ spec:
       retries: 3
   values:
     fullnameOverride: k8s-gateway
+    image:
+      registry: codeberg.org
+      repository: k8s-gateway/k8s_gateway
+      tag: "1.8.3@sha256:f692817ed4615526fc8b0749f3aa3e7c61f035280d42bdf38429aa81f31211ca"
     domain: "${SECRET_DOMAIN}"
     ttl: 1
     service:

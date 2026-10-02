@@ -14,3 +14,4 @@ resources:
   - ./piper/ks.yaml
   - ./ollama/ks.yaml
   - ./mealie/ks.yaml
+  - ./wyze-bridge/ks.yaml

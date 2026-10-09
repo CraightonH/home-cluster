@@ -25,7 +25,7 @@ spec:
     image:
       registry: codeberg.org
       repository: k8s-gateway/k8s_gateway
-      tag: "1.8.4@sha256:5fc84f1e29644779971692419c5c4f80453ee43b6d523eff3e0b1ed1cd194793"
+      tag: "1.9.2@sha256:80930fdbf98f28d4d5009cc4da8ddedbaa8afc9a6b753419e54d4cd30cea7308"
     domain: "${SECRET_DOMAIN}"
     ttl: 1
     service:

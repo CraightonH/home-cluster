@@ -76,6 +76,7 @@ spec:
       # k8s-gateway answers ingress/service hosts with the correct internal/external ingress IP
       conditional:
         mapping:
+          ps.${SECRET_DOMAIN}: ${SECRET_DEFAULT_GATEWAY}
           ${SECRET_DOMAIN}: 192.168.1.153
       blocking:
         denylists:

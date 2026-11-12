@@ -45,7 +45,7 @@ spec:
           main:
             image:
               repository: rhasspy/wyoming-piper
-              tag: 2.5.2
+              tag: 2.5.3
             env:
               TZ: America/Denver
             command:

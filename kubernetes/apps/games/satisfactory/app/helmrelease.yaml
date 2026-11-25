@@ -45,7 +45,7 @@ spec:
           satisfactory:
             image:
               repository: wolveix/satisfactory-server
-              tag: v1.9.11
+              tag: v1.10.0
             envFrom:
               - secretRef:
                   name: satisfactory-secret
